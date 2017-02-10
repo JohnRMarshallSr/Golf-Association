@@ -1,0 +1,45 @@
+﻿@model IEnumerable<GA.Data.Members>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <table>
+        <tr>
+            <td><img class="page-image" src="~/Content/images/page/user.png" /></td>
+            <td><h2>Association Members</h2></td>
+        </tr>
+    </table>
+</div>
+
+@{ var controller = "Members";}
+
+<div>
+    @(Html.Kendo().Grid<GA.Data.Members>()
+            .Name("MembersGrid")
+            .Columns(c =>
+            {
+                c.Bound(m => m.MemberId).Hidden(true);
+                c.Command(cmd => { cmd.Edit(); cmd.Destroy(); }).Width(180);
+                c.Bound(m => m.Lastname);
+                c.Bound(m => m.Firstname);
+            })
+            .DataSource(ds => ds
+                .Ajax()
+                .Destroy(d => d.Action("Delete", controller))
+                .Model(model => model.Id(m => m.MemberId))
+                .Read("Get", controller)
+                .Update(u => u.Action("Edit", controller))
+                .Sort(s => s.Add(m => m.Lastname))
+            )
+            .Editable(e => e.Mode(GridEditMode.InLine))
+            .Filterable()
+            .Sortable()
+            .ToolBar(t =>
+            {
+                t.Custom().Action("Create", controller).Text("Add");
+            })
+    )
+</div>

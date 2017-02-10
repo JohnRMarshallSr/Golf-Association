@@ -1,0 +1,36 @@
+﻿@model IEnumerable<GA.Data.AspNetRoles>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.AntiForgeryToken()
+<h2>Site Roles</h2>
+
+@{ var controller = "Roles";}
+
+<div>
+    @(Html.Kendo().Grid<GA.Data.AspNetRoles>()
+        .Name("RolesGrid")
+        .Columns(c =>
+        {
+            c.Bound(r => r.Id).Hidden(true);
+            c.Command(cmd => { cmd.Edit(); cmd.Destroy(); }).Width(180);
+            c.Bound(r => r.Name).Title("Role");
+        })
+        .DataSource(ds => ds
+            .Ajax()
+            .Destroy(d => d.Action("Delete", controller))
+            .Model(model => model.Id(m => m.Id))
+            .Read("GetRoles", controller)
+            .Update(u => u.Action("Edit", controller))
+        )
+        .Editable(e => e.Mode(GridEditMode.InLine))
+        .ToolBar(t =>
+        {
+            t.Custom().Action("Create", controller).Text("Add");
+        })
+        .Sortable()
+    )
+</div>

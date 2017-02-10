@@ -1,0 +1,97 @@
+﻿@model GA.Data.AspNetUsers
+
+@{
+    ViewBag.Title = "UserProfile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <table>
+        <tr>
+            <td><img class="page-image" src="~/Content/images/page/profile.png" /></td>
+            <td><h2>Profile</h2></td>
+        </tr>
+    </table>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.EmailConfirmed)
+        @Html.HiddenFor(model => model.PasswordHash)
+        @Html.HiddenFor(model => model.SecurityStamp)
+        @Html.HiddenFor(model => model.PhoneNumberConfirmed)
+        @Html.HiddenFor(model => model.TwoFactorEnabled)
+        @Html.HiddenFor(model => model.LockoutEnabled)
+        @Html.HiddenFor(model => model.LockoutEndDateUtc)
+        @Html.HiddenFor(model => model.AccessFailedCount)
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @(Html.Kendo().Tooltip().For("#Email").Content("Enter a valid Email address"))
+                @Html.Kendo().TextBoxFor(m => m.Email).HtmlAttributes(new { style = "width: 300px;" })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.UserName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @(Html.Kendo().Tooltip().For("#UserName").Content("Enter a name used to login in with."))
+                @Html.Kendo().TextBoxFor(m => m.UserName).HtmlAttributes(new { @class = "text-300" })
+                @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @(Html.Kendo().Tooltip().For("#PhoneNumber").Content("Optional, currently not used for anything"))
+            @Html.LabelFor(m => m.PhoneNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Member Association", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @(Html.Kendo().DropDownListFor(m => m.MemberId)                    
+                    .Name("MemberId")
+                    .DataTextField("DisplayName")
+                    .DataValueField("MemberId")
+                    .DataSource(ds => ds.Read(r => r.Action("GetList", "Members")))
+                    .HtmlAttributes(new { @class = "text-500" })
+                    .OptionLabel("None")
+                    )
+                @(Html.Kendo().Tooltip().For("#MemberId")
+                    .Content("Select a your name from the Member list.")
+                    .Position(TooltipPosition.Top)
+                    .Events(e => e.Show("onShowMemberTooltip"))
+                )
+                <div class="text-info">Select your name from the member (money winner) list</div>
+                @Html.ValidationMessageFor(m => m.MemberId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @(Html.Kendo().Button()
+                    .Name("Submit")
+                    .Content("Save")
+                )
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    function onShowMemberTooltip() {
+
+    }
+</script>

@@ -1,0 +1,329 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <table>
+        <tr>
+            <td><img class="page-image" src="~/Content/images/page/results.png" /></td>
+            <td><h2>Tournament Results</h2></td>
+        </tr>
+    </table>
+</div>
+
+<div>
+    @if (User.IsInRole("Administrator") || User.IsInRole("Tournament Manager") || User.IsInRole("Pro Shop"))
+    {
+        @(Html.Kendo().ToolBar()
+                .Name("EventToolbar")
+                .Items(i =>
+                {
+                    i.Add().Type(CommandType.Button).Text("Edit").Icon("pencil").Click("onEdit").HtmlAttributes(new { @class = "edit-button" });
+                    i.Add().Type(CommandType.Button).Text("Add Document").Icon("plus").Click("onAdd");
+                })
+        )
+    }
+
+    @(Html.Kendo().Grid<GA.Data.Event>()
+        .Name("ResultGrid")
+        .Columns(c =>
+        {
+            c.Bound(n => n.EventId).Hidden(true);
+            c.Bound(n => n.Title).Title("Tournament");
+            c.Bound(n => n.EventStart).Title("Start Date").ClientTemplate("#= kendo.toString(kendo.parseDate(EventStart), 'MMMM d, yyyy') #");
+            c.Bound(n => n.EventEnd).Title("End Date").ClientTemplate("#= kendo.toString(kendo.parseDate(EventEnd), 'MMMM d, yyyy') #");
+        })
+        .ClientDetailTemplateId("template")
+        .DataSource(ds => ds.Ajax().Model(model => model.Id(m => m.EventId)))
+        .Events(e => e.Change("onSelectionChanged"))
+        .Selectable()
+        .ToolBar(tb =>
+        {
+        tb.Template(@<text>
+        <div class="toolbar">
+            <label class="category-label" for="category">Select a Year  </label>
+            @(Html.Kendo().DropDownList()
+                    .Name("YearDD")
+                    .DataTextField("Value")
+                    .DataValueField("Text")
+                    .DataSource(ds =>
+                    {
+                        ds.Read(read => { read.Action("GetYears", "Select"); });                        
+                    })
+                    .Events(e =>
+                    {
+                        e.Change("onSelectYear");
+                    })
+                    .HtmlAttributes(new { style = "width: 100px;" })
+            )
+        </div>
+        </text>);
+        })
+    )
+</div>
+<style>
+    #grid .k-grid-toolbar {
+        padding: .6em 1.3em;
+    }
+    .category-label {
+        vertical-align: middle;
+        padding-right: .5em;
+    }
+
+    #category {
+        vertical-align: middle;
+    }
+
+    .toolbar {
+        float: right;
+    }
+</style>
+
+<script id="template" type="text/kendo-tmpl">
+    @(Html.Kendo().TabStrip()
+            .Name("tabStrip_" + "#=EventId#")
+            .SelectedIndex(0)
+            .Animation(animation => animation.Open(open => open.Fade(FadeDirection.In)))
+            .Items(items =>
+            {
+                items.Add().Text("Results").Content(@<text>
+                    @(Html.Kendo().Grid<GA.Models.MemberWinning>()
+                        .Name("MemberGrid_#=EventId#")
+                        .Columns(c =>
+                        {
+                            c.Bound(m => m.MemberId).Hidden(true);
+                            c.Bound(m => m.Member.DisplayName).ClientFooterTemplate("Totals");
+                            c.Bound(m => m.Flight.Name)
+                                .Title("Flight")
+                                .Groupable(true)
+                                .Hidden(true);
+                            c.Bound(m => m.Tournament).Title("Tournament")
+                                .ClientFooterTemplate("<div style='text-align: right;'>\\#= kendo.toString(sum, '$0.00')\\#</div>")
+                                .Filterable(false)
+                                .Format("{0:C}")
+                                .HtmlAttributes(new { style = "text-align:right;" })
+                                .Width(120);
+                        })
+                        .DataSource(ds => ds
+                            .Ajax()
+                            .Aggregates(a =>
+                            {
+                                a.Add(w => w.Tournament).Sum();
+                            })
+                            .Model(sModel => sModel.Id(sm => sm.MemberId))
+                            .Group(g => g.Add(m => m.Flight.Name))
+                            .Read(r => r.Action("GetTournament", "Money", new { eventId = "#=EventId#" }))
+                            .Sort(s => s.Add(m => m.Total).Descending())
+                        )
+                        .Events(e => e.DataBound("dataBound"))
+                        .Filterable(f => f.Operators(o => o.ForString(s => s
+                            .Clear()
+                            .Contains("Contains")
+                            .EndsWith("Ends with")
+                            .StartsWith("Starts with")
+                            .Equals("Equals")
+                        )))
+                        .Groupable()
+                        .Sortable()
+                        .ToClientTemplate()
+        )
+                </text>
+                );
+                items.Add().Text("Side Games").Content(@<text>
+        @(Html.Kendo().Grid<GA.Models.MemberWinning>()
+                        .Name("MemberSkinGrid_#=EventId#")
+                        .Columns(c =>
+                        {
+                            c.Bound(m => m.MemberId).Hidden(true);
+                            c.Bound(m => m.Member.DisplayName).ClientFooterTemplate("Totals");
+                            c.Bound(m => m.Flight.Name)
+                                .Title("Flight")
+                                .Groupable(true)
+                                .Hidden(true);
+                            c.Bound(m => m.SideGame).Title("Side Games")
+                                .ClientFooterTemplate("<div style='text-align: right;'>\\#= kendo.toString(sum, '$0.00')\\#</div>")
+                                .Filterable(false)
+                                .Format("{0:C}")
+                                .HtmlAttributes(new { style = "text-align:right;" })
+                                .Width(120);
+                        })
+                        .DataSource(ds => ds
+                            .Ajax()
+                            .Aggregates(a =>
+                            {
+                                a.Add(w => w.SideGame).Sum();
+                            })
+                            .Model(sModel => sModel.Id(sm => sm.MemberId))
+                            .Group(g => g.Add(m => m.Flight.Name))
+                            .Read(r => r.Action("GetSkins", "Money", new { eventId = "#=EventId#" }))
+                            .Sort(s => s.Add(m => m.Total).Descending())
+                        )
+                        .Events(e => e.DataBound("dataBound"))
+                        .Filterable(f => f.Operators(o => o.ForString(s => s
+                            .Clear()
+                            .Contains("Contains")
+                            .EndsWith("Ends with")
+                            .StartsWith("Starts with")
+                            .Equals("Equals")
+                        )))
+                        .Groupable()
+                        .Sortable()
+                        .ToClientTemplate()
+        )
+                </text>
+                );
+                items.Add().Text("Documents").Content(@<text>
+        @(Html.Kendo().Grid<GA.Models.EventDocumentView>()
+                        .Name("DocumentsGrid_" + "#=EventId#")
+                        .Columns(c =>
+                        {
+                            c.Bound(n => n.EventDocumentId).Hidden(true);
+                            c.Template(n => { }).ClientTemplate("<a class='k-button' href='" + Url.Action("Download", "EventDocuments", new { Id = "\\#=DocumentId\\#" }) + "'>Download</a>").Width(100);
+                            if (User.Identity.IsAuthenticated && (User.IsInRole("Administrator") || User.IsInRole("Document Manager")))
+                            {
+                                c.Template(n => { }).ClientTemplate("<a class='k-button' href='" + Url.Action("Delete", "EventDocuments", new { id = "\\#=EventDocumentId\\#" }) + "'>Delete</a>").Width(100);
+                            }
+                            c.Bound(n => n.Title).Title("Title");
+                        })
+                        .DataSource(ds => ds
+                            .Ajax()
+                            .Model(sModel => sModel.Id(sm => sm.EventDocumentId))
+                            .Read("GetEventDocuments", "EventDocuments", new { EventId = "#=EventId#" })
+                        )
+                       .Events(e => e.DataBound("dataBound"))
+                       .ToClientTemplate())
+                </text>);
+            })
+            .ToClientTemplate())
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        disableEditButton();
+        setTimeout(onTimeout, 1000);
+    });
+    
+    function disableEditButton() {
+        var toolbar = $("#EventToolbar");
+        var editButton = $(toolbar).find(".edit-button");
+        var deleteButton = $(toolbar).find(".delete-button");
+        if (editButton != null) {
+            editButton.addClass("k-state-disabled");
+            console.log("Disable Edit Button");
+        }
+    }
+
+    function onTimeout(){
+        var yearDdl = $("#YearDD").data("kendoDropDownList");
+        var currentYear = new Date().getFullYear();
+        yearDdl.value(currentYear);
+        populateEventGrid(currentYear);
+        console.log("document.ready()");
+    }
+
+    function onSelectYear(e) {
+        console.log("onSelectYear()");
+        var dataItem = this.dataItem(e.item);
+        var selectedYear = dataItem.Value;
+        disableEditButton();
+        populateEventGrid(selectedYear);
+    }
+
+    function populateEventGrid(selectedYear) {
+        console.log("populateEventGrid() ");
+        $.ajax({
+            url: '@Url.Action("GetResults", "Events")',
+            data: { year: selectedYear },
+            type: 'POST',
+            dataType: "json",
+            success: function(result) {
+                console.log("Calls to Events.GetResults() successful");
+                console.log(result);
+                var grid = $("#ResultGrid").getKendoGrid();
+                if(grid != null) {
+                    console.log("have the grid");
+                    grid.dataSource.data(result);
+                    console.log("after setting dataSource");
+                    grid.refresh();
+                    console.log("Refresh the Events Grid");
+                }
+            }
+        });
+    }
+
+
+    function dataBound(e) {
+        console.log("dataBound(" + this.wrapper.attr('id') + ")");
+
+        var grid = $("#DocumentsGrid").data("kendoGrid");
+        if(grid != null){
+            var si = grid.dataItem(grid.select());
+            if(si != null) {
+                console.log("DocumentId: " + si.DocumentId);
+            }
+        }
+    }
+
+    function onDownload(e) {
+        console.log("onDownload()");
+    }
+
+    function getId() {
+        var grid = $("#ResultGrid").data("kendoGrid");
+        var Id = "0";
+        var selectedItem = grid.dataItem(grid.select());
+        if (selectedItem != null) {
+            Id = selectedItem.EventId;
+        }
+        console.log("Selected EventId: " + Id);
+        return Id;
+    }
+
+    function onAdd(e) {
+        console.log("onAdd()");
+        // Get the selected year
+        var yearDdl = $("#YearDD").data("kendoDropDownList");
+        var selYear = yearDdl.value();
+        console.log("    Year: " + selYear);
+        var url = '@Url.Action("Create", "EventDocuments", new { year = "__year__" })'
+            .replace("__year__", selYear);
+        window.location.href = url;
+        return false;
+    }
+
+    function onEdit(e) {
+        console.log("onEdit()");
+        var id = getId();
+        if (id != 0) {
+            var url = '@Url.Action("Edit", "Events", new { id = "__id__" } )'
+                .replace("__id__", id);
+            window.location.href = url;
+        }
+        return false;
+    }
+
+    function onSelectionChanged(e) {
+        console.log("onSelectionChanged() Begin");
+        var grid = $("#ResultGrid").data("kendoGrid");
+        var toolbar = $("#EventToolbar");
+        var selectedItem = grid.dataItem(grid.select());
+        var editButton = $(toolbar).find(".edit-button");
+
+        if (selectedItem != null) {
+            console.log("Have a selected item");
+            if (editButton != null) {
+                editButton.removeClass("k-state-disabled");
+                console.log("Enable Edit Button");
+            }
+        }
+        else {
+            if (editButton != null) {
+                editButton.addClass("k-state-disabled");
+                console.log("Disable Edit Button");
+            }
+        }
+        console.log("onSelectionChanged() End");
+    }
+
+</script>

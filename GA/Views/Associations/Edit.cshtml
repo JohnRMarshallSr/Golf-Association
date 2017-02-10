@@ -1,0 +1,165 @@
+﻿@model GA.Data.Association
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <table>
+        <tr>
+            <td><img class="page-image" src="~/Content/images/page/administrator.png" /></td>
+            <td><h2>Edit Association</h2></td>
+        </tr>
+    </table>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.AssociationId)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.Kendo().TextBoxFor(model => model.Name).HtmlAttributes(new { @class = "text-500" })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Small Image", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @(Html.Kendo().DropDownList()
+                    .Name("SmallImage")
+                    .DataSource(ds => ds.Read(r => r.Action("Get", "Image")))
+                    .DataTextField("Text")
+                    .DataValueField("Text")
+                    .OptionLabel("Select an image")
+                    .Template("<img src='" + Url.Content("~/Content/images/") + "#:data.Text#' width='32' height='32' /> ")
+                )
+                @Html.ValidationMessageFor(model => model.SmallImage, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Large Image", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @(Html.Kendo().DropDownList()
+                    .Name("LargeImage")
+                    .DataSource(ds => ds.Read(r => r.Action("Get", "Image")))
+                    .DataTextField("Text")
+                    .DataValueField("Text")
+                    .OptionLabel("Select an image")
+                    .Template("<img src='" + Url.Content("~/Content/images/") + "#:data.Text#' width='64' height='64' /> ")
+                )
+                @Html.ValidationMessageFor(model => model.LargeImage, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Start Year", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.StartYear, new { htmlAttributes = new { @class = "text-100" } })
+                @Html.ValidationMessageFor(model => model.StartYear, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Mission Statement", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @(Html.Kendo().EditorFor(model => model.Mission)
+                    .Name("Mission")
+                    .HtmlAttributes(new { style = "height:440px" })
+                    .Resizable(r => r.Content(true).Toolbar(true))
+                )
+                @Html.ValidationMessageFor(model => model.Mission, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    .dropdown-header {
+        border-width: 0 0 1px 0;
+        text-transform: uppercase;
+    }
+
+        .dropdown-header > span {
+            display: inline-block;
+            padding: 10px;
+        }
+
+            .dropdown-header > span:first-child {
+                width: 50px;
+            }
+
+    .selected-value {
+        display: inline-block;
+        vertical-align: middle;
+        width: 24px;
+        height: 24px;
+        background-size: 100%;
+        margin-right: 5px;
+        border-radius: 50%;
+    }
+
+    #customers-list .k-item {
+        line-height: 1em;
+        min-width: 300px;
+    }
+
+    /* Material Theme padding adjustment*/
+
+    .k-material #customers-list .k-item,
+    .k-material #customers-list .k-item.k-state-hover,
+    .k-materialblack #customers-list .k-item,
+    .k-materialblack #customers-list .k-item.k-state-hover {
+        padding-left: 5px;
+        border-left: 0;
+    }
+
+    #customers-list .k-item > span {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        display: inline-block;
+        vertical-align: top;
+        margin: 20px 10px 10px 5px;
+    }
+
+        #customers-list .k-item > span:first-child {
+            -moz-box-shadow: inset 0 0 30px rgba(0,0,0,.3);
+            -webkit-box-shadow: inset 0 0 30px rgba(0,0,0,.3);
+            box-shadow: inset 0 0 30px rgba(0,0,0,.3);
+            margin: 10px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-size: 100%;
+            background-repeat: no-repeat;
+        }
+
+    #customers-list h3 {
+        font-size: 1.2em;
+        font-weight: normal;
+        margin: 0 0 1px 0;
+        padding: 0;
+    }
+
+    #customers-list p {
+        margin: 0;
+        padding: 0;
+        font-size: .8em;
+    }
+</style>

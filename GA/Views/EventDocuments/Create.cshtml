@@ -1,0 +1,173 @@
+﻿@model GA.Data.EventDocuments
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <table>
+        <tr>
+            <td><img class="page-image" src="~/Content/images/page/results.png" /></td>
+            <td><h2>Associate Document to Tournament</h2></td>
+        </tr>
+    </table>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+
+            @Html.LabelFor(model => model.EventId, "Year", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @(Html.Kendo().DropDownList()
+                    .Name("YearDD")
+                    .DataTextField("Value")
+                    .DataValueField("Text")
+                    .DataSource(ds =>
+                    {
+                        ds.Read(read => { read.Action("GetYears", "Select"); });
+                    })
+                    .Events(e =>
+                    {
+                        e.Change("onSelectYear");
+                    })
+                    .Value(ViewBag.Year)
+                )
+            </div>
+        </div>
+
+        <div class="form-group">
+
+            @Html.LabelFor(model => model.EventId, "Tournament", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @(Html.Kendo().DropDownListFor(m => m.EventId)
+                    .Name("EventId")
+                    .DataTextField("Title")
+                    .DataValueField("EventId")
+                    .HtmlAttributes(new { style = "width: 400px;" })
+                    .Template("<span class=\"k-state-default\">#: data.Title # - (</span>" +
+                    "<span class=\"k-state-default\">#:kendo.toString(kendo.parseDate(data.EventStart), 'yyyy.MM.dd')#</span>)")
+                    .ValueTemplate("<span>#:data.Title#</span> - (<span>#:kendo.toString(kendo.parseDate(data.EventStart), 'yyyy.MM.dd')#</span>)")
+                )
+                @Html.ValidationMessageFor(model => model.EventId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DocumentId, "Document", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @(Html.Kendo().DropDownListFor(m => m.DocumentId)
+                    .Name("DocumentId")
+                    .DataTextField("Title")
+                    .DataValueField("DocumentId")
+                    .DataSource(ds =>
+                    {
+                        ds.Read(read => { read.Action("GetList", "Documents"); });
+                    })
+                    .Template("<span class=\"k-state-default\">#: data.Filename # - </span>" +
+                    "<span class=\"k-state-default\">#: data.Title #</span>")
+                    .ValueTemplate("<span>#:data.Filename#</span> - <span>#:data.Title#</span>")
+                    .HtmlAttributes(new { style = "width: 400px;" })
+                )
+                @Html.ValidationMessageFor(model => model.DocumentId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @(Html.Kendo().Button()
+                    .Name("Create")
+                    .Content("Create")
+                    )
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    .dropdown-header {
+        border-width: 0 0 1px 0;
+        text-transform: uppercase;
+    }
+
+        .dropdown-header > span {
+            display: inline-block;
+            padding: 10px;
+        }
+
+            .dropdown-header > span:first-child {
+                width: 50px;
+            }
+
+    .k-detail-cell .k-tabstrip .k-content {
+        padding: 0.2em;
+    }
+
+    .event-details ul {
+        list-style: none;
+        font-style: italic;
+        margin: 15px;
+        padding: 0;
+    }
+
+        .event-details ul li {
+            margin: 0;
+            line-height: 1.7em;
+        }
+
+    .event-details label {
+        display: inline-block;
+        width: 90px;
+        padding-right: 10px;
+        text-align: right;
+        font-style: normal;
+        font-weight: bold;
+    }
+</style>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var selectedYear = getSelectedYear();
+        populateEvents(selectedYear);
+    });
+
+    function onSelectYear(e) {
+        console.log("onSelectYear()");
+        var selectedYear = getSelectedYear();
+        populateEvents(selectedYear);
+    }
+
+    function getSelectedYear() {
+        var yearDdl = $("#YearDD").data("kendoDropDownList");
+        var year = yearDdl.value();
+        console.log("Year: " + year);
+        return year;
+    }
+
+    function populateEvents(selectedYear) {
+        console.log("populateEvents()");
+        $.ajax({
+            url: '@Url.Action("GetList", "Events")',
+            data: { year: selectedYear },
+            type: 'POST',
+            dataType: "json",
+            success: function(result) {
+                console.log("Calls to Events.GetList() successful");
+                console.log(result);
+                var eventDdl = $("#EventId").data("kendoDropDownList");
+                if(eventDdl != null) {
+                    console.log("have the Event DDL");
+                    eventDdl.dataSource.data(result);
+                }
+            }
+        });
+    }
+
+</script>

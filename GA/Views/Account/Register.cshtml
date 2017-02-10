@@ -1,0 +1,53 @@
+﻿@model GA.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Register";
+}
+
+<div>
+    <table>
+        <tr>
+            <td><img class="page-image" src="~/Content/images/page/profile.png" /></td>
+            <td><h2>@ViewBag.Title</h2></td>
+        </tr>
+    </table>
+</div>
+
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <hr />
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+        @(Html.Kendo().Tooltip().For("#Email").Content("Enter a valid Email address"))
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+        @(Html.Kendo().Tooltip().For("#Password").Content("Passwords must have at least 6 characters, and at least 1 non letter or digit character"))
+        <div class="col-md-10">
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
+        @(Html.Kendo().Tooltip().For("#ConfirmPassword").Content("Must match the above Password"))
+        <div class="col-md-10">
+            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-default" value="Register" />
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script type="text/javascript">
+</script>

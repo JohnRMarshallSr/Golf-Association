@@ -1,0 +1,114 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{ var controller = "Image"; }
+
+<h2>Images</h2>
+
+<div>
+    @(Html.Kendo().ToolBar()
+        .Name("ImageToolbar")
+        .Items(i =>
+        {
+            i.Add().Type(CommandType.Button).Text("Add").Icon("plus").Click("onAdd");
+            i.Add().Type(CommandType.Button).Text("Delete").Icon("close").Click("onDelete").HtmlAttributes(new { @class = "delete-button" });
+        })
+    )
+
+    @(Html.Kendo().Grid<GA.Models.ImageFile>()
+        .Name("ImageGrid")
+        .Columns(c =>
+        {
+            c.Bound(n => n.Filename).Title("Filename");
+            c.Bound(n => n.Width).Title("Width").Width(100);
+            c.Bound(n => n.Height).Title("Height").Width(100);
+            c.Bound(n => n.Size).Title("Size").Width(100);
+        })
+        .DataSource(ds => ds
+            .Ajax().Model(model => model.Id(m => m.Filename))
+            .Read("GetImages", controller)
+        )
+        .Events(e => e.Change("onSelectionChanged"))
+        .Selectable()
+        .Sortable()
+    )
+
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        var toolbar = $("#ImageToolbar");
+        var deleteButton = $(toolbar).find(".delete-button");
+        if (deleteButton != null) {
+            deleteButton.addClass("k-state-disabled");
+            console.log("Disable Delete Button");
+        }
+    });
+
+    function onAdd(e) {
+        console.log("onAdd()");
+        var url = '@Url.Action("Create", controller)';
+        window.location.href = url;
+        return false;
+    }
+
+    function onDelete(e) {
+        console.log("onDelete()");
+        var id = getId();
+        if(id != 0) {
+            var url = '@Url.Action("Delete", controller, new { filename = "__id__" })'
+                .replace("__id__", id);
+            window.location.href = url;
+        }
+        return false;
+    }
+
+    function getId() {
+        console.log("getId()");
+        var grid = $("#ImageGrid").data("kendoGrid");
+        var Id = "0";
+        var selectedItem = grid.dataItem(grid.select());
+        if (selectedItem != null) {
+            Id = selectedItem.Filename;
+        }
+        console.log("Selected ImageId: " + Id);
+        return Id;
+    }
+
+    function onSelectionChanged(e) {
+        console.log("onSelectionChanged() Begin");
+        var grid = $("#ImageGrid").data("kendoGrid");
+        var toolbar = $("#ImageToolbar");
+        var selectedItem = grid.dataItem(grid.select());
+        var editButton = $(toolbar).find(".edit-button");
+        var deleteButton = $(toolbar).find(".delete-button");
+
+        if (selectedItem != null) {
+            console.log("Have a selected item");
+            if (editButton != null) {
+                editButton.removeClass("k-state-disabled");
+                console.log("Enable Edit Button");
+            }
+            if (deleteButton != null) {
+                deleteButton.removeClass("k-state-disabled");
+                console.log("Enable Delete Button");
+            }
+        }
+        else {
+            if (editButton != null) {
+                editButton.addClass("k-state-disabled");
+                console.log("Disable Edit Button");
+            }
+            if (deleteButton != null) {
+                deleteButton.addClass("k-state-disabled");
+                console.log("Disable Delete Button");
+            }
+        }
+        console.log("onSelectionChanged() End");
+    }
+
+</script>

@@ -1,0 +1,65 @@
+﻿/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+.page-image {
+margin: 0 10px;
+}
+
+div.float-user {
+    color : #003300;
+    font-weight: bold;
+    float: right;
+    margin: 10px;
+}
+float-copyright {
+    color : #003300;
+    font-weight: bold;
+    float: left;
+    margin: 10px;
+}
+
+.info {
+    color: #000000;
+    background-color: #baddff;
+    font-size: larger;
+    margin-bottom: 10px;
+}
+.error {
+    color: #D8000C;
+    background-color: #FFBABA;
+    font-size: larger;
+    margin-bottom: 10px;
+}
+
+.text-100,
+.k-textbox.text-100 {
+    width: 100px;
+}
+.text-300,
+.k-textbox.text-300 {
+    width: 300px;
+}
+.text-500,
+.k-textbox.text-500 {
+  width: 500px;
+}
+.text-all,
+.k-textbox.text-all {
+    width: 100%;
+}
+
+.display-center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto
+}

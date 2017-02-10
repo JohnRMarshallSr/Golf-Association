@@ -1,0 +1,86 @@
+﻿@model IEnumerable<GA.Data.AspNetUsers>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <table>
+        <tr>
+            <td><img class="page-image" src="~/Content/images/page/user.png" /></td>
+            <td><h2>Users</h2></td>
+        </tr>
+    </table>
+</div>
+
+<div>
+
+    @if (User.IsInRole("Administrator"))
+    {
+        @(Html.Kendo().ToolBar()
+        .Name("UsersToolbar")
+        .Items(i =>
+        {
+            i.Add().Type(CommandType.Button).Text("Edit").Icon("pencil").Click("onEdit").HtmlAttributes(new { @class = "edit-button" });
+            i.Add().Type(CommandType.Button).Text("Delete").Icon("close").Click("onDelete").HtmlAttributes(new { @class = "delete-button" });
+        })
+        )
+    }
+
+    @(Html.Kendo().Grid<GA.Data.AspNetUsers>()
+        .Name("UsersGrid")
+        .Columns(c =>
+        {
+            c.Bound(u => u.Id).Visible(false);
+            c.Bound(u => u.UserName).Title("Username");
+            c.Bound(u => u.Email).Title("Email");
+            c.Bound(u => u.PhoneNumber).Title("Phone Number");
+        })
+        .DataSource(ds => ds
+            .Ajax()
+            .Model(m => m.Id(u => u.Id))
+            .Read("GetUsers", "Users")
+        )
+        .Selectable()
+        .Sortable()
+     )
+
+</div>
+
+<script type="text/javascript">
+
+    function onEdit(e) {
+        console.log("onEdit()");
+        var id = getId();
+        if(id != 0) {
+            var url = '@Url.Action("Edit", "Users", new { id = "__id__" } )'
+                .replace("__id__", id);
+            window.location.href = url;
+        }
+        return false;
+    }
+
+    function onDelete(e) {
+        console.log("onDelete()");
+        var id = getId();
+        if(id != 0) {
+            var url = '@Url.Action("Delete", "Users", new { id = "__id__" })'
+                .replace("__id__", id);
+            window.location.href = url;
+        }
+        return false;
+    }
+
+    function getId() {
+        var grid = $("#UsersGrid").data("kendoGrid");
+        var Id = "0";
+        var selectedItem = grid.dataItem(grid.select());
+        if (selectedItem != null) {
+            Id = selectedItem.Id;
+        }
+        console.log("Selected Id: " + Id);
+        return Id;
+    }
+
+</script>

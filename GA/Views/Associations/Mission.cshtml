@@ -1,0 +1,20 @@
+﻿@model GA.Data.Association
+
+@{
+    ViewBag.Title = "MissionView";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <table>
+        <tr>
+            <td><img class="page-image" src="~/Content/images/page/administrator.png" /></td>
+            <td><h2>Mission Statement</h2></td>
+        </tr>
+    </table>
+</div>
+
+<div>
+    <hr />
+    @Html.Raw(System.Web.HttpUtility.HtmlDecode(Model.Mission))
+</div>

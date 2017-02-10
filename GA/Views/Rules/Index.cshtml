@@ -1,0 +1,130 @@
+﻿@model IEnumerable<GA.Data.Rules>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <table>
+        <tr>
+            <td><img class="page-image" src="~/Content/images/page/rules.png" /></td>
+            <td><h2>Rules</h2></td>
+        </tr>
+    </table>
+</div>
+
+<div>
+    @(Html.Kendo().ToolBar()
+        .Name("LinksToolbar")
+        .Items(i =>
+        {
+            i.Add().Type(CommandType.Button).Text("View").Icon("search").Click("onView").HtmlAttributes(new { @class = "view-button" });
+            if (User.IsInRole("Administrator") || User.IsInRole("Pro Shop"))
+            {
+                i.Add().Type(CommandType.Button).Text("Add").Icon("plus").Click("onAdd").HtmlAttributes(new { @class = "plus-button" });
+                i.Add().Type(CommandType.Button).Text("Edit").Icon("pencil").Click("onEdit").HtmlAttributes(new { @class = "edit-button" });
+                i.Add().Type(CommandType.Button).Text("Delete").Icon("close").Click("onDelete").HtmlAttributes(new { @class = "delete-button" });
+            }
+        })
+    )
+</div>
+
+<div>
+    @(Html.Kendo().Grid<GA.Data.Rules>()
+            .Name("RulesGrid")
+            .Columns(c =>
+            {
+                c.Bound(l => l.RuleId).Visible(false);
+                if (User.IsInRole("Administrator"))
+                {
+                    c.Bound(l => l.Active).Title("Active").Width(50);
+                }
+                c.Bound(l => l.RuleDate).Title("Date").Width(100).Format("{0:MMMM yyyy}");
+                c.Bound(l => l.Title).Title("Title").Width(200);
+            })
+            .DataSource(ds =>
+            {
+                if(User.IsInRole("Administrator"))
+                {
+                    ds.Ajax()
+                    .Model(model => model.Id(l => l.RuleId))
+                    .Read("GetRules", "Rules")
+                    .Sort(s => s.Add(m => m.RuleDate).Descending());
+                }
+                else
+                {
+                    ds.Ajax()
+                    .Model(model => model.Id(l => l.RuleId))
+                    .Read("GetRules", "Rules")
+                    .Filter(f => f.Add(m => m.Active).IsEqualTo(true))
+                    .Sort(s => s.Add(m => m.RuleDate).Descending());
+                }
+            })
+            .Events(e => e.DataBound("onDataBound"))
+            .Selectable()
+            .Sortable()
+    )
+</div>
+
+<script type="text/javascript">
+
+    function onView(e) {
+        console.log("onView()");
+        var id = getId();
+        if(id != 0) {
+            var url = '@Url.Action("Details", "Rules", new { id = "__id__" } )'
+                .replace("__id__", id);
+            window.location.href = url;
+        }
+        return false;
+    }
+
+    function onAdd(e) {
+        console.log("onAdd()");
+        var url = '@Url.Action("Create", "Rules")';
+        window.location.href = url;
+        return false;
+    }
+
+    function onEdit(e) {
+        console.log("onEdit()");
+        var id = getId();
+        if(id != 0) {
+            var url = '@Url.Action("Edit", "Rules", new { id = "__id__" } )'
+                .replace("__id__", id);
+            window.location.href = url;
+        }
+        return false;
+    }
+
+    function onDelete(e) {
+        console.log("onDelete()");
+        var id = getId();
+        if(id != 0) {
+            var url = '@Url.Action("Delete", "Rules", new { id = "__id__" })'
+                .replace("__id__", id);
+            window.location.href = url;
+        }
+        return false;
+    }
+
+    function getId() {
+        var grid = $("#RulesGrid").data("kendoGrid");
+        var Id = "0";
+        var selectedItem = grid.dataItem(grid.select());
+        if (selectedItem != null) {
+            Id = selectedItem.RuleId;
+        }
+        console.log("Selected Id: " + Id);
+        return Id;
+    }
+
+    function onDataBound() {
+        var grid = $("#RulesGrid").data("kendoGrid");
+        grid.tbody.find("tr").dblclick(function (e) {
+            var dataItem = grid.dataItem(this);
+            onView();
+            });
+    }
+</script>

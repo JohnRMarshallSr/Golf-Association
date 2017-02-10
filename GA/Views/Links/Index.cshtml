@@ -1,0 +1,85 @@
+﻿@model IEnumerable<GA.Data.Links>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Links</h2>
+
+<div>
+    @(Html.Kendo().ToolBar()
+            .Name("LinksToolbar")
+            .Items(i =>
+            {
+                i.Add().Type(CommandType.Button).Text("Add").Icon("plus").Click("onAdd").HtmlAttributes(new { @class = "plus-button" });
+                i.Add().Type(CommandType.Button).Text("Edit").Icon("pencil").Click("onEdit").HtmlAttributes(new { @class = "edit-button" });
+                i.Add().Type(CommandType.Button).Text("Delete").Icon("close").Click("onDelete").HtmlAttributes(new { @class = "delete-button" });
+            })
+    )
+</div>
+<div>
+    @(Html.Kendo().Grid<GA.Data.Links>()
+        .Name("LinksGrid")
+        .Columns(c =>
+        {
+            c.Bound(l => l.LinkId).Visible(false);
+            c.Bound(l => l.Active).Title("Active").Width(50);
+            c.Bound(l => l.Priority).Title("Priority").Width(50);
+            c.Bound(l => l.Title).Title("Title").Width(200);
+            c.Bound(l => l.Link).Title("Link").Width(300);
+            c.Bound(l => l.Description).Title("Description");
+        })
+        .DataSource(ds =>
+        {
+            ds.Ajax()
+            .Model(model => model.Id(l => l.LinkId))
+            .Read("GetLinks", "Links");
+        })
+        .Selectable()
+    )
+</div>
+
+<script type="text/javascript">
+
+    function onAdd(e) {
+        console.log("onAdd()");
+        var url = '@Url.Action("Create", "Links")';
+        window.location.href = url;
+        return false;
+    }
+
+    function onEdit(e) {
+        console.log("onEdit()");
+        var id = getId();
+        if(id != 0) {
+            var url = '@Url.Action("Edit", "Links", new { id = "__id__" } )'
+                .replace("__id__", id);
+            window.location.href = url;
+        }
+        return false;
+    }
+
+    function onDelete(e) {
+        console.log("onDelete()");
+        var id = getId();
+        if(id != 0) {
+            var url = '@Url.Action("Delete", "Links", new { id = "__id__" })'
+                .replace("__id__", id);
+            window.location.href = url;
+        }
+        return false;
+    }
+
+    function getId() {
+        var grid = $("#LinksGrid").data("kendoGrid");
+        var Id = "0";
+        var selectedItem = grid.dataItem(grid.select());
+        if (selectedItem != null) {
+            Id = selectedItem.LinkId;
+        }
+        console.log("Selected Id: " + Id);
+        return Id;
+    }
+
+</script>

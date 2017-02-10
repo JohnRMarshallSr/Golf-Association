@@ -1,0 +1,149 @@
+﻿
+@model GA.Data.Event
+
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+@Html.HiddenFor(model => model.EventId)
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.Kendo().TextBoxFor(model => model.Description).HtmlAttributes(new { @class = "text-all" })
+        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Course, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.Course, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Course, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Start, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.Start, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Start, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.SignUpStart, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @(Html.Kendo().DateTimePickerFor(model => model.SignUpStart)
+                    .Name("SignUpStart")
+                    .Max(Model.SignUpEnd)
+                    .Events(e => e.Change("onChangeSignupStart"))
+                    .HtmlAttributes(new { @class = "form-control" }))
+        @Html.ValidationMessageFor(model => model.SignUpStart, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.SignUpEnd, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @(Html.Kendo().DateTimePickerFor(model => model.SignUpEnd)
+                    .Name("SignUpEnd")
+                    .Min(Model.SignUpStart)
+                    .Events(e => e.Change("onChangeSignupEnd"))
+                    .HtmlAttributes(new { @class = "form-control" }))
+        @Html.ValidationMessageFor(model => model.SignUpEnd, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.EventStart, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @(Html.Kendo().DateTimePickerFor(model => model.EventStart)
+                    .Name("EventStart")
+                    .Max(Model.EventEnd)
+                    .Events(e => e.Change("onChangeEventStart"))
+                    .HtmlAttributes(new { @class = "form-control" }))
+        @Html.ValidationMessageFor(model => model.EventStart, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.EventEnd, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @(Html.Kendo().DateTimePickerFor(model => model.EventEnd)
+                    .Name("EventEnd")
+                    .Min(Model.EventStart)
+                    .Events(e => e.Change("onChangeEventEnd"))
+                    .HtmlAttributes(new { @class = "form-control" }))
+        @Html.ValidationMessageFor(model => model.EventEnd, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.EntryFee, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.EntryFee, new { htmlAttributes = new { @class = "text-100" } })
+        @Html.ValidationMessageFor(model => model.EntryFee, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+    });
+
+    function onChangeSignupStart() {
+        console.log("onChangeSignupStart()");
+        var endPicker = $("#SignUpEnd").data("kendoDateTimePicker"),
+            startDate = this.value();
+
+        if (startDate) {
+            startDate = new Date(startDate);
+            startDate.setDate(startDate.getDate());
+            endPicker.min(startDate);
+        }
+    }
+
+    function onChangeSignupEnd() {
+        console.log("onChangeSignupEnd()");
+        var startPicker = $("#SignUpStart").data("kendoDateTimePicker"),
+            endDate = this.value();
+
+        if (endDate) {
+            endDate = new Date(endDate);
+            endDate.setDate(endDate.getDate());
+            startPicker.max(endDate);
+        }
+    }
+
+    function onChangeEventStart() {
+        console.log("onChangeEventStart()");
+        var endPicker = $("#EventEnd").data("kendoDateTimePicker"),
+            startDate = this.value();
+
+        if (startDate) {
+            startDate = new Date(startDate);
+            startDate.setDate(startDate.getDate());
+            endPicker.min(startDate);
+        }
+    }
+
+    function onChangeEventEnd() {
+        console.log("onChangeEventEnd()");
+        var startPicker = $("#EventStart").data("kendoDateTimePicker"),
+            endDate = this.value();
+
+        if (endDate) {
+            endDate = new Date(endDate);
+            endDate.setDate(endDate.getDate());
+            startPicker.max(endDate);
+        }
+    }
+
+</script>

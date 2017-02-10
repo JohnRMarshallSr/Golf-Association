@@ -1,0 +1,199 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <table>
+        <tr>
+            <td><img class="page-image" src="~/Content/images/page/money.png" /></td>
+            <td><h2>Money List</h2></td>
+        </tr>
+    </table>
+</div>
+
+<div>
+    @(Html.Kendo().Grid<GA.Models.Winnings>()
+            .Name("MoneyGrid")
+            .Columns(c =>
+            {
+                c.Bound(w => w.MemberId).Hidden(true);
+                c.Bound(w => w.Member.DisplayName).Title("Member")
+                .ClientFooterTemplate("Totals");
+                c.Bound(w => w.Tournament).Title("Tournament")
+                    .Filterable(false)
+                    .Format("{0:C}")
+                    .ClientFooterTemplate("<div style='text-align: right;'>#= kendo.toString(sum, '$0.00')#</div>")
+                    .HtmlAttributes(new { style = "text-align:right;" })
+                    .Width(120);
+                c.Bound(w => w.SideGame).Title("Side Games")
+                    .Filterable(false)
+                    .Format("{0:C}")
+                    .ClientFooterTemplate("<div style='text-align: right;'>#= kendo.toString(sum, '$0.00')#</div>")
+                    .HtmlAttributes(new { style = "text-align:right;" })
+                    .Width(120);
+                c.Bound(w => w.Total).Title("Total")
+                    .Filterable(false)
+                    .Format("{0:C}")
+                    .ClientFooterTemplate("<div style='text-align: right;'>#= kendo.toString(sum, '$0.00')#</div>")
+                    .HtmlAttributes(new { style = "text-align:right;" })
+                    .Width(120);
+            })
+            .ClientDetailTemplateId("detailTemplate")
+            .DataSource(ds =>
+            {
+                ds.Ajax()
+                .Aggregates(a =>
+                {
+                    a.Add(w => w.Tournament).Sum();
+                    a.Add(w => w.SideGame).Sum();
+                    a.Add(w => w.Total).Sum();
+                })
+                .Model(Model => Model.Id(m => m.MemberId))
+                .Read(r => r.Action("Get", "Money").Data("getYear"))
+                .ServerOperation(false)
+                .Sort(s => s.Add("Total").Descending());
+            })
+            .Events(e => e.DetailExpand("onDetailExpand"))
+            .Filterable(f => f.Operators(o => o.ForString(s => s
+                .Clear()
+                .Contains("Contains")
+                .EndsWith("Ends with")
+                .StartsWith("Starts with")
+                .Equals("Equals")
+            )))
+            .Sortable()
+            .ToolBar(tb =>
+            {
+            tb.Template(@<text>
+            <div class="toolbar">
+                <label class="category-label" for="category">Select a Year  </label>
+                @(Html.Kendo().DropDownList()
+                        .Name("YearDD")
+                        .DataTextField("Value")
+                        .DataValueField("Text")
+                        .DataSource(ds =>
+                        {
+                            ds.Read(read => { read.Action("GetYears", "Select"); });
+                        })
+                        .Events(e =>
+                        {
+                            e.Change("onSelectYear");
+                        })
+                    .HtmlAttributes(new { style = "width: 100px;" })
+                )
+            </div>
+            </text>);
+            })
+    )
+</div>
+
+<script id="detailTemplate" type="text/kendo-tmpl">
+    @(Html.Kendo().Grid<GA.Models.MemberWinning>()
+            .Name("MemberGrid_#=MemberId#")
+            .Columns(c =>
+            {
+                c.Bound(m => m.MemberId).Hidden(true);
+                c.Bound(m => m.Event.EventEnd).Title("Date")
+                    .ClientTemplate("\\#= kendo.toString(kendo.parseDate(Event.EventEnd), 'MMMM dd yyyy') \\#");
+                c.Bound(m => m.Event.Title).Title("Event");
+                c.Bound(m => m.Flight.Name).Title("Flight");
+                c.Bound(m => m.Tournament).Title("Tournament")
+                    .Format("{0:C}")
+                    .HtmlAttributes(new { style = "text-align:right;" })
+                    .Width(120);
+                c.Bound(m => m.SideGame).Title("Side Games")
+                    .Format("{0:C}")
+                    .HtmlAttributes(new { style = "text-align:right;" })
+                    .Width(120);
+                c.Bound(m => m.Total).Title("Total")
+                    .Format("{0:C}")
+                    .HtmlAttributes(new { style = "text-align:right;" })
+                    .Width(120);
+            })
+            .DataSource(ds => ds
+                .Ajax()
+                .Model(sModel => sModel.Id(sm => sm.MemberId))
+                .Read(r => r.Action("GetMember", "Money").Data("getMember"))
+            )
+            .Sortable()
+            .ToClientTemplate()
+        )
+</script>
+<style>
+    #grid .k-grid-toolbar {
+        padding: .6em 1.3em;
+    }
+
+    .category-label {
+        vertical-align: middle;
+        padding-right: .5em;
+    }
+
+    #category {
+        vertical-align: middle;
+    }
+
+    .toolbar {
+        float: right;
+    }
+</style>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var yearDdl = $("#YearDD").data("kendoDropDownList");
+        var currentYear = new Date().getFullYear();
+        yearDdl.value(currentYear);
+        populateGrid(currentYear);
+        console.log("document.ready()");
+    });
+
+    function onSelectYear(e) {
+        console.log("onSelectYear()");
+        var dataItem = this.dataItem(e.item);
+        var selectedYear = dataItem.Value;
+        populateGrid(selectedYear);
+    }
+
+    function getYear(){
+        var yearDdl = $("#YearDD").data("kendoDropDownList");
+        var selectedYear = new Date().getFullYear();
+        if(yearDdl != null){
+            console.log("have yearDdl");
+            var y = yearDdl.value();
+            if(y != null) {
+                selectedYear = y;
+            }
+        }
+        console.log("getYear: " + selectedYear);
+        return { year: selectedYear };
+    }
+
+    function getMember(){
+        console.log("getMember()");
+        var yearDdl = $("#YearDD").data("kendoDropDownList");
+        var selectedYear = new Date().getFullYear();
+        if(yearDdl != null){
+            console.log("    have yearDdl");
+            selectedYear = yearDdl.value();
+        }
+        console.log("getYear: " + selectedYear);
+        return { memberId: id, year: selectedYear };
+    }
+    var id = 0;
+
+    function onDetailExpand(e) {
+        console.log("onDetailExpand()");
+        id = e.sender.dataItem(e.masterRow).MemberId;
+        console.log("memberId: " + id);
+        var grid = $("#MemberGrid_" + id).getKendoGrid();
+        grid.dataSource.read();
+    }
+
+    function populateGrid(selectedYear) {
+        console.log("populateGrid(" + selectedYear + ") ");
+        var grid = $("#MoneyGrid").getKendoGrid();
+        grid.dataSource.read();
+    }
+
+</script>

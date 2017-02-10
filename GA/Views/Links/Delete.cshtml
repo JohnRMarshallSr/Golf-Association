@@ -1,0 +1,74 @@
+﻿@model GA.Data.Links
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete Link</h2>
+
+<h3>Are you sure you want to delete this link?</h3>
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Active)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Active)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Link)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Link)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Priority)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Priority)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            @Html.Kendo().Button().Name("submitButton").HtmlAttributes(new { type = "submit" }).Content("Delete").Icon("close")
+        </div>
+
+        <div class="form-group">
+            @(Html.Kendo().MobileButton()
+            .Align(MobileButtonAlign.Left)
+            .HtmlAttributes(new { @class = "nav-button" })
+            .Url(@Url.Action("Index", "Links"))
+            .Text("Back to List")
+            )
+        </div>
+        <div class="form-actions no-color">
+        </div>
+    }
+</div>

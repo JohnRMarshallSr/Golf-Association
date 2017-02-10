@@ -1,0 +1,209 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    <!--This bundle was moved by the Telerik VS Extensions for compatibility reasons-->
+    @Scripts.Render("~/bundles/jquery")
+        <link href="@Url.Content("~/Content/kendo/2016.3.914/kendo.common.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo/2016.3.914/kendo.mobile.all.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo/2016.3.914/kendo.dataviz.min.css")" rel="stylesheet" type="text/css" />
+<link href="@Url.Content("~/Content/kendo/2016.3.914/kendo.green.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo/2016.3.914/kendo.dataviz.flat.min.css")" rel="stylesheet" type="text/css" />
+        <script src="@Url.Content("~/Scripts/kendo/2016.3.914/jquery.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo/2016.3.914/jszip.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo/2016.3.914/kendo.all.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo/2016.3.914/kendo.aspnetmvc.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo.modernizr.custom.js")"></script>
+</head>
+<body>
+    <header>
+        <div>
+            <a href="~/Home">
+                <img src="/Content/images/PJ.png" id="SmallImg" class="image-left" width="64" height="64" />
+            </a>
+        </div>
+        <div>
+            <center><a href="~/Home"><h2>@(Html.Label("|", new { id = "NameLabel" }))</h2></a></center>
+        </div>
+    </header>
+    <div>
+        <nav>
+            @(Html.Kendo().Menu()
+                .Name("Menu")
+                .Items(menu =>
+                {
+                    menu.Add().Text("News").Action("Index", "News").ImageUrl("~/Content/images/menu/news.png");
+                    menu.Add().Text("Schedule").Action("Index", "Events").ImageUrl("~/content/images/menu/schedule.png");
+                    menu.Add().Text("Results").Action("Index", "EventDocuments").ImageUrl("~/content/images/menu/results.png");
+                    menu.Add().Text("Money List").Action("Index", "Money").ImageUrl("~/content/images/menu/money.png");
+                    menu.Add().Text("Rules").Action("Index", "Rules").ImageUrl("~/content/images/menu/rules.png");
+                    menu.Add().Text("Mission").Action("Mission", "Associations").ImageUrl("~/content/images/menu/administrator.png");
+                    menu.Add().Text("Board").Action("Index", "Board").ImageUrl("~/content/images/menu/Board.png");
+                    menu.Add().Text("FAQ").Action("Index", "FAQs").ImageUrl("~/content/images/menu/FAQ.png");
+                    menu.Add().Text("User").HtmlAttributes(new { style = "float: right;" }).ImageUrl("~/Content/images/menu/user.png")
+                        .Items(um =>
+                        {
+                            if (!Request.IsAuthenticated)
+                            {
+                                um.Add().Text("Log In").Action("LogIn", "Account").ImageUrl("~/Content/images/menu/login.png");
+                                um.Add().Text("Register").Action("Register", "Account").ImageUrl("~/Content/images/menu/profile.png");
+                            }
+                            else
+                            {
+                                um.Add().Text("Home").Action("Home", "Members", new { username = User.Identity.Name }).ImageUrl("~/Content/images/menu/user.png");
+                                um.Add().Text("Profile").Action("UserProfile", "Users").ImageUrl("~/Content/images/menu/profile.png");
+                                um.Add().Text("Log out").HtmlAttributes(new { onclick = "getElementById('logoutForm').submit()" }).ImageUrl("~/Content/images/menu/logout.png");
+                            }
+                        });
+                    if (User.IsInRole("Administrator"))
+                    {
+                        menu.Add().Text("Administrator").HtmlAttributes(new { style = "float: right;" }).ImageUrl("~/Content/images/menu/administrator.png")
+                            .Items(am =>
+                            {
+                                am.Add().Text("Association").Action("Edit", "Associations", new { id = 1 });
+                                am.Add().Text("Documents").Action("Index", "Documents");
+                                am.Add().Text("Images").Action("Index", "Image");
+                                am.Add().Text("Links").Action("Index", "Links");
+                                am.Add().Text("Manage Money List").Action("Manage", "Money");
+                                am.Add().Text("Members").Action("Index", "Members");
+                                am.Add().Text("Roles").Action("Index", "Roles");
+                                am.Add().Text("Users").Action("Index", "Users");
+                                am.Add().Text("User Roles").Action("Roles", "Users");
+                            });
+                    }
+                    else if (User.IsInRole("Tournament Manager"))
+                    {
+                        menu.Add().Text("Manager").HtmlAttributes(new { style = "float: right;" }).ImageUrl("~/Content/images/menu/administrator.png")
+                            .Items(am =>
+                            {
+                                am.Add().Text("Documents").Action("Index", "Documents");
+                                am.Add().Text("Manage Money List").Action("Manage", "Money");
+                                am.Add().Text("Members").Action("Index", "Members");
+                            });
+                    }
+                    else if (User.IsInRole("Pro Shop"))
+                    {
+                        menu.Add().Text("Pro Shop").HtmlAttributes(new { style = "float: right;" }).ImageUrl("~/Content/images/menu/administrator.png")
+                            .Items(am =>
+                            {
+                                am.Add().Text("Documents").Action("Index", "Documents");
+                            });
+                    }
+                })
+                )
+                @using (Html.BeginForm("SignOut", "Account", new { area = "" }, FormMethod.Post, new { id = "logoutForm" }))
+                {
+                    @Html.AntiForgeryToken()
+                }
+        </nav>
+    </div>
+    <br />
+    <div class="container body-content">
+        @RenderBody()
+        <footer>
+            <br />
+            <div>
+                @(Html.Kendo().ListView<GA.Data.Links>()
+                    .Name("linksListView")
+                    .TagName("div")
+                    .ClientTemplateId("linkTemplate")
+                    .DataSource(ds =>
+                    {
+                        ds.Read(r => r.Action("GetLinks", "Links"));
+                        ds.Model(model => model.Id(m => m.LinkId));
+                        ds.PageSize(3);
+                        ds.Filter(f => f.Add(a => a.Active).IsEqualTo(true));
+                    })
+                    .Events(e => e.DataBound("onLinkGridDataBound"))
+                    .Pageable()
+                )
+            </div>
+            @if (Request.IsAuthenticated)
+            {
+                <div class="float-user">Welcome @User.Identity.Name</div>
+            }
+            <div class="float-copyright">
+                <p>@(Html.Label("|", new { id = "FooterLabel" }))</p>
+            </div>
+        </footer>
+    </div>
+
+
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+
+<script type="text/x-kendo-tmpl" id="linkTemplate">
+    <div class="link">
+        <h2><a href="#:Link#">#:Title#</a></h2>
+        <p>#:Description#</p>
+    </div>
+</script>
+
+<style>
+    .image-left {
+        float: left;
+        height: 40px;
+        padding: 0 0 0 0;
+        width: 40px;
+    }
+    #linksListView {
+        padding: 5px, 5px;
+        margin-top: 10px;
+        margin-bottom: -1px;
+    }
+
+    .link {
+        float: left;
+        position: relative;
+        width: 300px;
+        height: 170px;
+        margin: 0 5px;
+        padding: 0;
+    }
+
+    .link h2 {
+        margin: 0;
+        padding: 3px 5px 0 0;
+        max-width: 330px;
+        overflow: hidden;
+    }
+
+    .k-listview:after {
+        content: ".";
+        display: block;
+        height: 0;
+        clear: both;
+        visibility: hidden;
+    }
+
+</style>
+
+<script type="text/javascript">
+    function onLinkGridDataBound() {
+        if (this.dataSource.totalPages() == 1) {
+            this.pager.element.hide();
+        }
+    }
+
+    $(document).ready(function() {
+        $.ajax({
+            url: '@Url.Action("Get", "Associations")',
+            type: 'POST',
+            dataType: "json",
+            success: function(result) {
+                // console.log("Call to Associations.Get() successful");
+                // console.log(result);
+                document.getElementById('NameLabel').innerHTML = result.Name;
+                document.getElementById('FooterLabel').innerHTML = String.fromCharCode(169) + " " + result.StartYear + " - @DateTime.Now.Year " + result.Name + ".  All Rights Reserved.";
+                document.getElementById('SmallImg').src = "/Content/images/" + result.SmallImage;
+            }
+        });
+
+    });
+</script>

@@ -1,0 +1,25 @@
+﻿@model GA.Data.Rules
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <table>
+        <tr>
+            <td><img class="page-image" src="~/Content/images/page/rules.png" /></td>
+            <td><h2>@Html.DisplayFor(model => model.Title)</h2></td>
+        </tr>
+    </table>
+</div>
+
+<div>
+    <hr />    
+    @Html.Raw(System.Web.HttpUtility.HtmlDecode(Model.Description))
+</div>
+<br />
+<br />
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>

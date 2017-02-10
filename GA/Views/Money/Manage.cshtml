@@ -1,0 +1,133 @@
+﻿@model IEnumerable<GA.Data.MemberWinnings>
+
+@{
+    ViewBag.Title = "Manage";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <table>
+        <tr>
+            <td><img class="page-image" src="~/Content/images/page/money.png" /></td>
+            <td><h2>Manage Money List</h2></td>
+        </tr>
+    </table>
+</div>
+
+@{ var controller = "Money";}
+<div>
+    @(Html.Kendo().ToolBar()
+        .Name("WinningsToolbar")
+        .Items(i =>
+        {
+            i.Add().Type(CommandType.Button).Text("Add").Icon("plus").Click("onAdd");
+        })
+    )
+
+    @(Html.Kendo().Grid<GA.Data.MemberWinnings>()
+        .Name("MWGrid")
+        .Columns(c =>
+        {
+            c.Bound(m => m.MemberWinningId).Hidden(true);
+            c.Template(n => { }).ClientTemplate("<a class='k-button' href='" + Url.Action("Delete", "Money", new { id = "#=MemberWinningId#" }) + "'>Delete</a>").Width(100);
+            c.Bound(m => m.Members.DisplayName).Title("Member");
+            c.Bound(m => m.Event.Title).Title("Event");
+            c.Bound(m => m.WinningTypes.WinningType).Title("Type");
+            c.Bound(m => m.Amount).Title("Amount")
+                .Format("{0:C}")
+                .HtmlAttributes(new { style = "text-align:right;" });
+        })
+        .ToolBar(t =>
+        {
+        t.Template(@<text>
+                <div class="toolbar">
+                    <label class="category-label" for="category">Select a Year  </label>
+                        @(Html.Kendo().DropDownList()
+                            .Name("YearDD")
+                            .DataTextField("Value")
+                            .DataValueField("Text")
+                            .DataSource(ds =>
+                            {
+                                ds.Read(read => { read.Action("GetYears", "Select"); });
+                            })
+                            .Events(e =>
+                            {
+                                e.Change("onSelectYear");
+                            })
+                        )
+                </div>
+            </text>);
+        })
+    )
+</div>
+
+<style>
+    #grid .k-grid-toolbar {
+        padding: .6em 1.3em;
+    }
+
+    .category-label {
+        vertical-align: middle;
+        padding-right: .5em;
+    }
+
+    #category {
+        vertical-align: middle;
+    }
+
+    .toolbar {
+        float: right;
+    }
+</style>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var yearDdl = $("#YearDD").data("kendoDropDownList");
+        var currentYear = new Date().getFullYear();
+        yearDdl.value(currentYear);
+        populateGrid(currentYear);
+        console.log("document.ready()");
+    });
+
+    function onSelectYear(e) {
+        console.log("onSelectYear()");
+        var dataItem = this.dataItem(e.item);
+        var selectedYear = dataItem.Value;
+        populateGrid(selectedYear);
+    }
+
+    function populateGrid(selectedYear) {
+        console.log("populateGrid() ");
+        $.ajax({
+            url: '@Url.Action("GetWinnings", controller)',
+            data: { year: selectedYear },
+            type: 'POST',
+            dataType: "json",
+            success: function(result) {
+                console.log("Calls to Events.GetResults() successful");
+                console.log(result);
+                var grid = $("#MWGrid").getKendoGrid();
+                if(grid != null) {
+                    console.log("have the grid");
+                    grid.dataSource.data(result);
+                    console.log("after setting dataSource");
+                    grid.refresh();
+                    console.log("Refresh the Events Grid");
+                }
+            }
+        });
+    }
+
+    function onAdd(e) {
+        console.log("onAdd()");
+        // Get the selected year
+        var yearDdl = $("#YearDD").data("kendoDropDownList");
+        var selYear = yearDdl.value();
+        console.log("    Year: " + selYear);
+        var url = '@Url.Action("Create", "Money", new { year = "__year__" })'
+            .replace("__year__", selYear);
+        window.location.href = url;
+        return false;
+    }
+
+</script>

@@ -1,0 +1,95 @@
+﻿@model IEnumerable<GA.Data.Board>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <table>
+        <tr>
+            <td><img class="page-image" src="~/Content/images/page/Board.png" /></td>
+            <td><h2>Board Members</h2></td>
+        </tr>
+    </table>
+</div>
+
+<div>
+    @if(User.IsInRole("Administrator"))
+    {
+        @(Html.Kendo().ToolBar()
+               .Name("BoardToolbar")
+               .Items(i =>
+               {
+                   i.Add().Type(CommandType.Button).Text("Add").Icon("plus").Click("onAdd").HtmlAttributes(new { @class = "plus-button" });
+                   i.Add().Type(CommandType.Button).Text("Edit").Icon("pencil").Click("onEdit").HtmlAttributes(new { @class = "edit-button" });
+                   i.Add().Type(CommandType.Button).Text("Delete").Icon("close").Click("onDelete").HtmlAttributes(new { @class = "delete-button" });
+               })
+        )
+    }
+
+</div>
+<div>
+    @(Html.Kendo().Grid<GA.Data.Board>()
+        .Name("BoardGrid")
+        .Columns(c =>
+        {
+            c.Bound(l => l.BoardId).Visible(false);
+            c.Bound(l => l.Title).Title("Title");
+            c.Bound(l => l.Member).Title("Member");
+            c.Bound(l => l.phone).Title("Phone");
+            c.Bound(l => l.email).Title("Email");
+        })
+        .DataSource(ds =>
+        {
+            ds.Ajax()
+            .Model(model => model.Id(l => l.BoardId))
+            .Read("Get", "Board");
+        })
+        .Selectable()
+    )
+</div>
+
+<script type="text/javascript">
+
+    function onAdd(e) {
+        console.log("onAdd()");
+        var url = '@Url.Action("Create", "Board")';
+        window.location.href = url;
+        return false;
+    }
+
+    function onEdit(e) {
+        console.log("onEdit()");
+        var id = getId();
+        if(id != 0) {
+            var url = '@Url.Action("Edit", "Board", new { id = "__id__" } )'
+                .replace("__id__", id);
+            window.location.href = url;
+        }
+        return false;
+    }
+
+    function onDelete(e) {
+        console.log("onDelete()");
+        var id = getId();
+        if(id != 0) {
+            var url = '@Url.Action("Delete", "Board", new { id = "__id__" })'
+                .replace("__id__", id);
+            window.location.href = url;
+        }
+        return false;
+    }
+
+    function getId() {
+        var grid = $("#BoardGrid").data("kendoGrid");
+        var Id = "0";
+        var selectedItem = grid.dataItem(grid.select());
+        if (selectedItem != null) {
+            Id = selectedItem.BoardId;
+        }
+        console.log("Selected Id: " + Id);
+        return Id;
+    }
+
+</script>

@@ -1,0 +1,38 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br />
+<div>
+    <img src="~/Content/images/PJ-Logo.png" id="LargeImg" class="display-center" />
+</div>
+<style>
+    .k.grid, .k-grid * {
+        border: 0 !important;
+    }
+
+    .left {
+        text-align: left;
+    }
+
+    .right {
+        text-align: right;
+    }
+</style>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $.ajax({
+            url: '@Url.Action("Get", "Associations")',
+            type: 'POST',
+            dataType: "json",
+            success: function(result) {
+                //console.log("Calls to Associations.Get() successful");
+                //console.log(result);
+                document.getElementById('LargeImg').src = "Content/images/" + result.LargeImage;
+            }
+        });
+
+    });
+
+</script>

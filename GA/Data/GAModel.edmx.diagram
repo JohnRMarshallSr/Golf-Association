@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="9819ab0127f54f82a62dca3d8afb8d3a" Name="Diagram1">
+        <EntityTypeShape EntityType="GAModel.News" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="GAModel.Event" Width="1.5" PointX="3.375" PointY="0.75" />
+        <EntityTypeShape EntityType="GAModel.EventDocuments" Width="1.5" PointX="6.125" PointY="1.5" />
+        <AssociationConnector Association="GAModel.FK_EventDocuments_Event" />
+        <EntityTypeShape EntityType="GAModel.Documents" Width="1.5" PointX="9.125" PointY="1.875" />
+        <AssociationConnector Association="GAModel.FK_EventDocuments_Documents" />
+        <EntityTypeShape EntityType="GAModel.AspNetRoles" Width="1.5" PointX="0.75" PointY="4" />
+        <EntityTypeShape EntityType="GAModel.AspNetUserClaims" Width="1.5" PointX="3" PointY="9.25" />
+        <EntityTypeShape EntityType="GAModel.AspNetUserLogins" Width="1.5" PointX="3" PointY="12" />
+        <EntityTypeShape EntityType="GAModel.AspNetUserRoles" Width="1.5" PointX="3" PointY="5.875" />
+        <EntityTypeShape EntityType="GAModel.AspNetUsers" Width="1.5" PointX="0.75" PointY="6.875" />
+        <AssociationConnector Association="GAModel.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" />
+        <AssociationConnector Association="GAModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="GAModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="GAModel.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" />
+        <EntityTypeShape EntityType="GAModel.Links" Width="1.5" PointX="5.375" PointY="4.75" />
+        <EntityTypeShape EntityType="GAModel.Rules" Width="1.5" PointX="7.375" PointY="5.75" />
+        <EntityTypeShape EntityType="GAModel.FAQ" Width="1.5" PointX="5.375" PointY="8.75" />
+        <EntityTypeShape EntityType="GAModel.Members" Width="1.5" PointX="7.375" PointY="8.75" />
+        <AssociationConnector Association="GAModel.FK_AspNetUsers_Members" ManuallyRouted="true" >
+          <ConnectorPoint PointX="7.3761528461538459" PointY="8.75" />
+          <ConnectorPoint PointX="7.0011528461538459" PointY="8.4270833333333339" />
+          <ConnectorPoint PointX="2.625" PointY="8.4270833333333339" />
+          <ConnectorPoint PointX="2.625" PointY="6.5" />
+          <ConnectorPoint PointX="2.25" PointY="6.875" />
+        </AssociationConnector>
+        <EntityTypeShape EntityType="GAModel.MemberWinnings" Width="1.5" PointX="9.625" PointY="5.5" />
+        <EntityTypeShape EntityType="GAModel.WinningTypes" Width="1.5" PointX="7.375" PointY="12" />
+        <AssociationConnector Association="GAModel.FK_MemberWinnings_Event" />
+        <AssociationConnector Association="GAModel.FK_MemberWinnings_Members" />
+        <AssociationConnector Association="GAModel.FK_MemberWinnings_WinningTypes" />
+        <EntityTypeShape EntityType="GAModel.Association" Width="1.5" PointX="9.375" PointY="9.75" />
+        <EntityTypeShape EntityType="GAModel.Board" Width="1.5" PointX="11.375" PointY="0.75" />
+        <EntityTypeShape EntityType="GAModel.Flight" Width="1.5" PointX="11.375" PointY="9.875" />
+        <AssociationConnector Association="GAModel.FK_MemberWinnings_Flight" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

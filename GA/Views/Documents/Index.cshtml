@@ -1,0 +1,58 @@
+﻿@model IEnumerable < GA.Data.Documents>
+    
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.AntiForgeryToken()
+<h2>Documents</h2>
+
+<div id="error" class="error"></div>
+<div>
+    @(Html.Kendo().Grid<GA.Data.Documents>()
+            .Name("DocumentsGrid")
+            .Columns(c =>
+            {
+                c.Bound(n => n.DocumentId).Hidden(true);
+                c.Command(cmd => { cmd.Edit(); cmd.Destroy(); }).Width(180);
+                c.Bound(n => n.Title).Title("Title");
+                c.Bound(n => n.Filename).Title("Filename");
+                c.Bound(n => n.Type).Title("Content Type").Hidden(true);
+            })
+            .DataSource(ds => ds
+                .Ajax()
+                .Destroy(d => d.Action("Delete", "Documents"))
+                .Events(e => e.Error("errorHandler"))
+                .Model(model =>
+                {
+                    model.Id(m => m.DocumentId);
+                    model.Field(m => m.Extension).Editable(false);
+                    model.Field(m => m.Type).Editable(false);
+                })
+            .Read("GetDocuments", "Documents")
+            .Update(u => u.Action("Edit", "Documents"))
+        )
+        .Editable(e => e.Mode(GridEditMode.InLine))
+        .ToolBar(t =>
+        {
+            t.Custom().Action("Create", "Documents").Text("Add");
+        })
+        .Sortable()
+    )
+</div>
+
+<script type="text/javascript">
+    function errorHandler(e, grid) {
+        document.getElementById('error').innerHTML = "";
+        if(e.errors){
+            document.getElementById('error').innerHTML = e.errors;
+            $('#DocumentsGrid').data('kendoGrid').dataSource.read();
+            $('#DocumentsGrid').data('kendoGrid').refresh();
+        }
+        else{
+            document.getElementById('error').innerHTML = "";
+        }
+    }
+
+</script>

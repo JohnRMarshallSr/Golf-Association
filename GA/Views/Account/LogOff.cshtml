@@ -1,0 +1,15 @@
+﻿
+@{
+    ViewBag.Title = "LogOff";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>LogOff</h3>
+@using (Html.BeginForm("SignOut", "Account"))
+{
+@(Html.Kendo().Button()
+            .Name("SignOff").Content("Submit")
+            .HtmlAttributes(new { type = "button" })
+)
+}
+

@@ -1,0 +1,53 @@
+﻿@model GA.Data.EventDocuments
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <table>
+        <tr>
+            <td><img class="page-image" src="~/Content/images/page/results.png" /></td>
+            <td><h2>Delete Tournament Document</h2></td>
+        </tr>
+    </table>
+</div>
+
+<h3>Are you sure you want to delete "@Html.DisplayFor(model => model.Documents.Title)" from "@Html.DisplayFor(model => model.Event.Title)"?</h3>
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            <label>Tournament:</label>
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Event.Title)
+        </dd>
+
+        <dt>
+            <label>Document:</label>
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Documents.Title)
+        </dd>
+
+        <dt>
+            <label>Filename:</label>
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Documents.Filename)
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" />
+        </div>
+    }
+</div>

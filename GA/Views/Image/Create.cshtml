@@ -1,0 +1,17 @@
+﻿@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Add Image</h2>
+
+<form method="post" action='@Url.Action("Create")'>
+    <div class="demo-section k-content">
+        @(Html.Kendo().Upload()
+            .Name("files")
+        )
+        <p style="padding-top: 1em; text-align: right">
+            <input type="submit" value="Submit" class="k-button k-primary" />
+        </p>
+    </div>
+</form>

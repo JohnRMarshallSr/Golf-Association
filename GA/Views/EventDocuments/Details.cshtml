@@ -1,0 +1,35 @@
+﻿@model GA.Data.EventDocuments
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>EventDocuments</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Event.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Event.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Documents.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Documents.Title)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.EventDocumentId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

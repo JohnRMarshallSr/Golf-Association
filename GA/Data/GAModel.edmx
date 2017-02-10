@@ -1,0 +1,1027 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="GAModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AspNetRoles">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AspNetUserClaims">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="ClaimType" Type="nvarchar(max)" />
+          <Property Name="ClaimValue" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="AspNetUserLogins">
+          <Key>
+            <PropertyRef Name="LoginProvider" />
+            <PropertyRef Name="ProviderKey" />
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="LoginProvider" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="ProviderKey" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AspNetUserRoles">
+          <Key>
+            <PropertyRef Name="UserRoleId" />
+          </Key>
+          <Property Name="UserRoleId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="RoleId" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AspNetUsers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="256" />
+          <Property Name="EmailConfirmed" Type="bit" Nullable="false" />
+          <Property Name="PasswordHash" Type="nvarchar(max)" />
+          <Property Name="SecurityStamp" Type="nvarchar(max)" />
+          <Property Name="PhoneNumber" Type="nvarchar(max)" />
+          <Property Name="PhoneNumberConfirmed" Type="bit" Nullable="false" />
+          <Property Name="TwoFactorEnabled" Type="bit" Nullable="false" />
+          <Property Name="LockoutEndDateUtc" Type="datetime" />
+          <Property Name="LockoutEnabled" Type="bit" Nullable="false" />
+          <Property Name="AccessFailedCount" Type="int" Nullable="false" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="MemberId" Type="int" />
+        </EntityType>
+        <EntityType Name="Association">
+          <Key>
+            <PropertyRef Name="AssociationId" />
+          </Key>
+          <Property Name="AssociationId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="80" Nullable="false" />
+          <Property Name="SmallImage" Type="nvarchar(max)" />
+          <Property Name="LargeImage" Type="nvarchar(max)" />
+          <Property Name="StartYear" Type="int" Nullable="false" />
+          <Property Name="Mission" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Board">
+          <Key>
+            <PropertyRef Name="BoardId" />
+          </Key>
+          <Property Name="BoardId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="80" Nullable="false" />
+          <Property Name="Member" Type="nvarchar" MaxLength="80" />
+          <Property Name="email" Type="nvarchar" MaxLength="255" />
+          <Property Name="phone" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="Documents">
+          <Key>
+            <PropertyRef Name="DocumentId" />
+          </Key>
+          <Property Name="DocumentId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DocumentContent" Type="varbinary(max)" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Type" Type="nvarchar" MaxLength="100" />
+          <Property Name="Filename" Type="nvarchar(max)" />
+          <Property Name="Extension" Type="nvarchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="Event">
+          <Key>
+            <PropertyRef Name="EventId" />
+          </Key>
+          <Property Name="EventId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Course" Type="nvarchar" MaxLength="50" />
+          <Property Name="Start" Type="nvarchar" MaxLength="50" />
+          <Property Name="SignUpStart" Type="datetime" Nullable="false" />
+          <Property Name="SignUpEnd" Type="datetime" Nullable="false" />
+          <Property Name="EventStart" Type="datetime" Nullable="false" />
+          <Property Name="EventEnd" Type="datetime" Nullable="false" />
+          <Property Name="EntryFee" Type="money" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EventDocuments">
+          <Key>
+            <PropertyRef Name="EventDocumentId" />
+          </Key>
+          <Property Name="EventDocumentId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EventId" Type="int" Nullable="false" />
+          <Property Name="DocumentId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FAQ">
+          <Key>
+            <PropertyRef Name="FAQId" />
+          </Key>
+          <Property Name="FAQId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Active" Type="bit" Nullable="false" />
+          <Property Name="FAQDate" Type="date" Nullable="false" />
+          <Property Name="Question" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Answer" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Flight">
+          <Key>
+            <PropertyRef Name="FlightId" />
+          </Key>
+          <Property Name="FlightId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Links">
+          <Key>
+            <PropertyRef Name="LinkId" />
+          </Key>
+          <Property Name="LinkId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Link" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="Priority" Type="int" Nullable="false" />
+          <Property Name="Active" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Members">
+          <Key>
+            <PropertyRef Name="MemberId" />
+          </Key>
+          <Property Name="MemberId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Lastname" Type="nvarchar" MaxLength="80" Nullable="false" />
+          <Property Name="Firstname" Type="nvarchar" MaxLength="80" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MemberWinnings">
+          <Key>
+            <PropertyRef Name="MemberWinningId" />
+          </Key>
+          <Property Name="MemberWinningId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MemberId" Type="int" Nullable="false" />
+          <Property Name="WinningTypeId" Type="int" Nullable="false" />
+          <Property Name="Amount" Type="money" Nullable="false" />
+          <Property Name="EventId" Type="int" Nullable="false" />
+          <Property Name="FlightId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="News">
+          <Key>
+            <PropertyRef Name="NewsId" />
+          </Key>
+          <Property Name="NewsId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Article" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Rules">
+          <Key>
+            <PropertyRef Name="RuleId" />
+          </Key>
+          <Property Name="RuleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Active" Type="bit" Nullable="false" />
+          <Property Name="RuleDate" Type="date" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="80" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="WinningTypes">
+          <Key>
+            <PropertyRef Name="WinningTypeId" />
+          </Key>
+          <Property Name="WinningTypeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="WinningType" Type="nvarchar" MaxLength="12" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_AspNetUsers_Members">
+          <End Role="Members" Type="Self.Members" Multiplicity="0..1" />
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Members">
+              <PropertyRef Name="MemberId" />
+            </Principal>
+            <Dependent Role="AspNetUsers">
+              <PropertyRef Name="MemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserClaims" Type="Self.AspNetUserClaims" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserClaims">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserLogins" Type="Self.AspNetUserLogins" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserLogins">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
+          <End Role="AspNetRoles" Type="Self.AspNetRoles" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserRoles" Type="Self.AspNetUserRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetRoles">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserRoles">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserRoles" Type="Self.AspNetUserRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserRoles">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EventDocuments_Documents">
+          <End Role="Documents" Type="Self.Documents" Multiplicity="1" />
+          <End Role="EventDocuments" Type="Self.EventDocuments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Documents">
+              <PropertyRef Name="DocumentId" />
+            </Principal>
+            <Dependent Role="EventDocuments">
+              <PropertyRef Name="DocumentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EventDocuments_Event">
+          <End Role="Event" Type="Self.Event" Multiplicity="1" />
+          <End Role="EventDocuments" Type="Self.EventDocuments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Event">
+              <PropertyRef Name="EventId" />
+            </Principal>
+            <Dependent Role="EventDocuments">
+              <PropertyRef Name="EventId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MemberWinnings_Event">
+          <End Role="Event" Type="Self.Event" Multiplicity="1" />
+          <End Role="MemberWinnings" Type="Self.MemberWinnings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Event">
+              <PropertyRef Name="EventId" />
+            </Principal>
+            <Dependent Role="MemberWinnings">
+              <PropertyRef Name="EventId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MemberWinnings_Flight">
+          <End Role="Flight" Type="Self.Flight" Multiplicity="1" />
+          <End Role="MemberWinnings" Type="Self.MemberWinnings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Flight">
+              <PropertyRef Name="FlightId" />
+            </Principal>
+            <Dependent Role="MemberWinnings">
+              <PropertyRef Name="FlightId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MemberWinnings_Members">
+          <End Role="Members" Type="Self.Members" Multiplicity="1" />
+          <End Role="MemberWinnings" Type="Self.MemberWinnings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Members">
+              <PropertyRef Name="MemberId" />
+            </Principal>
+            <Dependent Role="MemberWinnings">
+              <PropertyRef Name="MemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MemberWinnings_WinningTypes">
+          <End Role="WinningTypes" Type="Self.WinningTypes" Multiplicity="1" />
+          <End Role="MemberWinnings" Type="Self.MemberWinnings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WinningTypes">
+              <PropertyRef Name="WinningTypeId" />
+            </Principal>
+            <Dependent Role="MemberWinnings">
+              <PropertyRef Name="WinningTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="GAModelStoreContainer">
+          <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaims" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogins" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Association" EntityType="Self.Association" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Board" EntityType="Self.Board" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Documents" EntityType="Self.Documents" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Event" EntityType="Self.Event" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EventDocuments" EntityType="Self.EventDocuments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FAQ" EntityType="Self.FAQ" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Flight" EntityType="Self.Flight" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Links" EntityType="Self.Links" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Members" EntityType="Self.Members" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MemberWinnings" EntityType="Self.MemberWinnings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="News" EntityType="Self.News" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Rules" EntityType="Self.Rules" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WinningTypes" EntityType="Self.WinningTypes" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_AspNetUsers_Members" Association="Self.FK_AspNetUsers_Members">
+            <End Role="Members" EntitySet="Members" />
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserClaims" EntitySet="AspNetUserClaims" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserLogins" EntitySet="AspNetUserLogins" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
+            <End Role="AspNetRoles" EntitySet="AspNetRoles" />
+            <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EventDocuments_Documents" Association="Self.FK_EventDocuments_Documents">
+            <End Role="Documents" EntitySet="Documents" />
+            <End Role="EventDocuments" EntitySet="EventDocuments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EventDocuments_Event" Association="Self.FK_EventDocuments_Event">
+            <End Role="Event" EntitySet="Event" />
+            <End Role="EventDocuments" EntitySet="EventDocuments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MemberWinnings_Event" Association="Self.FK_MemberWinnings_Event">
+            <End Role="Event" EntitySet="Event" />
+            <End Role="MemberWinnings" EntitySet="MemberWinnings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MemberWinnings_Flight" Association="Self.FK_MemberWinnings_Flight">
+            <End Role="Flight" EntitySet="Flight" />
+            <End Role="MemberWinnings" EntitySet="MemberWinnings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MemberWinnings_Members" Association="Self.FK_MemberWinnings_Members">
+            <End Role="Members" EntitySet="Members" />
+            <End Role="MemberWinnings" EntitySet="MemberWinnings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MemberWinnings_WinningTypes" Association="Self.FK_MemberWinnings_WinningTypes">
+            <End Role="WinningTypes" EntitySet="WinningTypes" />
+            <End Role="MemberWinnings" EntitySet="MemberWinnings" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="GAModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="News">
+          <Key>
+            <PropertyRef Name="NewsId" />
+          </Key>
+          <Property Name="NewsId" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Article" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="GAEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="News" EntityType="Self.News" />
+          <EntitySet Name="Event" EntityType="GAModel.Event" />
+          <EntitySet Name="EventDocuments" EntityType="GAModel.EventDocuments" />
+          <AssociationSet Name="FK_EventDocuments_Event" Association="GAModel.FK_EventDocuments_Event">
+            <End Role="Event" EntitySet="Event" />
+            <End Role="EventDocuments" EntitySet="EventDocuments" />
+          </AssociationSet>
+          <EntitySet Name="Documents" EntityType="GAModel.Documents" />
+          <AssociationSet Name="FK_EventDocuments_Documents" Association="GAModel.FK_EventDocuments_Documents">
+            <End Role="Documents" EntitySet="Documents" />
+            <End Role="EventDocuments" EntitySet="EventDocuments" />
+          </AssociationSet>
+          <EntitySet Name="AspNetRoles" EntityType="GAModel.AspNetRoles" />
+          <EntitySet Name="AspNetUserClaims" EntityType="GAModel.AspNetUserClaims" />
+          <EntitySet Name="AspNetUserLogins" EntityType="GAModel.AspNetUserLogins" />
+          <EntitySet Name="AspNetUserRoles" EntityType="GAModel.AspNetUserRoles" />
+          <EntitySet Name="AspNetUsers" EntityType="GAModel.AspNetUsers" />
+          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" Association="GAModel.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
+            <End Role="AspNetRoles" EntitySet="AspNetRoles" />
+            <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="GAModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserClaims" EntitySet="AspNetUserClaims" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" Association="GAModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserLogins" EntitySet="AspNetUserLogins" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" Association="GAModel.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
+          </AssociationSet>
+          <EntitySet Name="Links" EntityType="GAModel.Links" />
+          <EntitySet Name="Rules" EntityType="GAModel.Rules" />
+          <EntitySet Name="FAQ" EntityType="GAModel.FAQ" />
+          <EntitySet Name="Members" EntityType="GAModel.Members" />
+          <AssociationSet Name="FK_AspNetUsers_Members" Association="GAModel.FK_AspNetUsers_Members">
+            <End Role="Members" EntitySet="Members" />
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+          </AssociationSet>
+          <EntitySet Name="MemberWinnings" EntityType="GAModel.MemberWinnings" />
+          <EntitySet Name="WinningTypes" EntityType="GAModel.WinningTypes" />
+          <AssociationSet Name="FK_MemberWinnings_Event" Association="GAModel.FK_MemberWinnings_Event">
+            <End Role="Event" EntitySet="Event" />
+            <End Role="MemberWinnings" EntitySet="MemberWinnings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MemberWinnings_Members" Association="GAModel.FK_MemberWinnings_Members">
+            <End Role="Members" EntitySet="Members" />
+            <End Role="MemberWinnings" EntitySet="MemberWinnings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MemberWinnings_WinningTypes" Association="GAModel.FK_MemberWinnings_WinningTypes">
+            <End Role="WinningTypes" EntitySet="WinningTypes" />
+            <End Role="MemberWinnings" EntitySet="MemberWinnings" />
+          </AssociationSet>
+          <EntitySet Name="Association" EntityType="GAModel.Association" />
+          <EntitySet Name="Board" EntityType="GAModel.Board" />
+          <EntitySet Name="Flight" EntityType="GAModel.Flight" />
+          <AssociationSet Name="FK_MemberWinnings_Flight" Association="GAModel.FK_MemberWinnings_Flight">
+            <End Role="Flight" EntitySet="Flight" />
+            <End Role="MemberWinnings" EntitySet="MemberWinnings" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Event">
+          <Key>
+            <PropertyRef Name="EventId" />
+          </Key>
+          <Property Name="EventId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Course" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Start" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SignUpStart" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="SignUpEnd" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EventStart" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EventEnd" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EntryFee" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <NavigationProperty Name="EventDocuments" Relationship="GAModel.FK_EventDocuments_Event" FromRole="Event" ToRole="EventDocuments" />
+          <NavigationProperty Name="MemberWinnings" Relationship="GAModel.FK_MemberWinnings_Event" FromRole="Event" ToRole="MemberWinnings" />
+        </EntityType>
+        <EntityType Name="EventDocuments">
+          <Key>
+            <PropertyRef Name="EventDocumentId" />
+          </Key>
+          <Property Name="EventDocumentId" Type="Int32" Nullable="false" />
+          <Property Name="EventId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Event" Relationship="GAModel.FK_EventDocuments_Event" FromRole="EventDocuments" ToRole="Event" />
+          <Property Name="DocumentId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Documents" Relationship="GAModel.FK_EventDocuments_Documents" FromRole="EventDocuments" ToRole="Documents" />
+        </EntityType>
+        <Association Name="FK_EventDocuments_Event">
+          <End Type="GAModel.Event" Role="Event" Multiplicity="1" />
+          <End Type="GAModel.EventDocuments" Role="EventDocuments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Event">
+              <PropertyRef Name="EventId" />
+            </Principal>
+            <Dependent Role="EventDocuments">
+              <PropertyRef Name="EventId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Documents">
+          <Key>
+            <PropertyRef Name="DocumentId" />
+          </Key>
+          <Property Name="DocumentId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DocumentContent" Type="Binary" Nullable="false" MaxLength="Max" FixedLength="false" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="EventDocuments" Relationship="GAModel.FK_EventDocuments_Documents" FromRole="Documents" ToRole="EventDocuments" />
+          <Property Name="Type" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Filename" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Extension" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_EventDocuments_Documents">
+          <End Type="GAModel.Documents" Role="Documents" Multiplicity="1" />
+          <End Type="GAModel.EventDocuments" Role="EventDocuments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Documents">
+              <PropertyRef Name="DocumentId" />
+            </Principal>
+            <Dependent Role="EventDocuments">
+              <PropertyRef Name="DocumentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AspNetRoles">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUserRoles" Relationship="GAModel.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" FromRole="AspNetRoles" ToRole="AspNetUserRoles" />
+        </EntityType>
+        <EntityType Name="AspNetUserClaims">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ClaimType" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ClaimValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUsers" Relationship="GAModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUserClaims" ToRole="AspNetUsers" />
+        </EntityType>
+        <EntityType Name="AspNetUserLogins">
+          <Key>
+            <PropertyRef Name="LoginProvider" />
+            <PropertyRef Name="ProviderKey" />
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="LoginProvider" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ProviderKey" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUsers" Relationship="GAModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUserLogins" ToRole="AspNetUsers" />
+        </EntityType>
+        <EntityType Name="AspNetUserRoles">
+          <Key>
+            <PropertyRef Name="UserRoleId" />
+          </Key>
+          <Property Name="UserRoleId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="RoleId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetRoles" Relationship="GAModel.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" FromRole="AspNetUserRoles" ToRole="AspNetRoles" />
+          <NavigationProperty Name="AspNetUsers" Relationship="GAModel.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" FromRole="AspNetUserRoles" ToRole="AspNetUsers" />
+        </EntityType>
+        <EntityType Name="AspNetUsers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="EmailConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="PasswordHash" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SecurityStamp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumberConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="TwoFactorEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="LockoutEndDateUtc" Type="DateTime" Precision="3" />
+          <Property Name="LockoutEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="AccessFailedCount" Type="Int32" Nullable="false" />
+          <Property Name="UserName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUserClaims" Relationship="GAModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserClaims" />
+          <NavigationProperty Name="AspNetUserLogins" Relationship="GAModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserLogins" />
+          <NavigationProperty Name="AspNetUserRoles" Relationship="GAModel.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserRoles" />
+          <Property Name="MemberId" Type="Int32" />
+          <NavigationProperty Name="Members" Relationship="GAModel.FK_AspNetUsers_Members" FromRole="AspNetUsers" ToRole="Members" />
+        </EntityType>
+        <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
+          <End Type="GAModel.AspNetRoles" Role="AspNetRoles" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="GAModel.AspNetUserRoles" Role="AspNetUserRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetRoles">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserRoles">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+          <End Type="GAModel.AspNetUsers" Role="AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="GAModel.AspNetUserClaims" Role="AspNetUserClaims" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserClaims">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+          <End Type="GAModel.AspNetUsers" Role="AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="GAModel.AspNetUserLogins" Role="AspNetUserLogins" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserLogins">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
+          <End Type="GAModel.AspNetUsers" Role="AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="GAModel.AspNetUserRoles" Role="AspNetUserRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserRoles">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Links">
+          <Key>
+            <PropertyRef Name="LinkId" />
+          </Key>
+          <Property Name="LinkId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Link" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="Priority" Type="Int32" Nullable="false" />
+          <Property Name="Active" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Rules">
+          <Key>
+            <PropertyRef Name="RuleId" />
+          </Key>
+          <Property Name="RuleId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Active" Type="Boolean" Nullable="false" />
+          <Property Name="RuleDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="80" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="FAQ">
+          <Key>
+            <PropertyRef Name="FAQId" />
+          </Key>
+          <Property Name="FAQId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Active" Type="Boolean" Nullable="false" />
+          <Property Name="FAQDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Question" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Answer" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Members">
+          <Key>
+            <PropertyRef Name="MemberId" />
+          </Key>
+          <Property Name="MemberId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Lastname" Type="String" Nullable="false" MaxLength="80" FixedLength="false" Unicode="true" />
+          <Property Name="Firstname" Type="String" Nullable="false" MaxLength="80" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUsers" Relationship="GAModel.FK_AspNetUsers_Members" FromRole="Members" ToRole="AspNetUsers" />
+          <NavigationProperty Name="MemberWinnings" Relationship="GAModel.FK_MemberWinnings_Members" FromRole="Members" ToRole="MemberWinnings" />
+        </EntityType>
+        <Association Name="FK_AspNetUsers_Members">
+          <End Type="GAModel.Members" Role="Members" Multiplicity="0..1" />
+          <End Type="GAModel.AspNetUsers" Role="AspNetUsers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Members">
+              <PropertyRef Name="MemberId" />
+            </Principal>
+            <Dependent Role="AspNetUsers">
+              <PropertyRef Name="MemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="MemberWinnings">
+          <Key>
+            <PropertyRef Name="MemberWinningId" />
+          </Key>
+          <Property Name="MemberWinningId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MemberId" Type="Int32" Nullable="false" />
+          <Property Name="WinningTypeId" Type="Int32" Nullable="false" />
+          <Property Name="Amount" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="EventId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Event" Relationship="GAModel.FK_MemberWinnings_Event" FromRole="MemberWinnings" ToRole="Event" />
+          <NavigationProperty Name="Members" Relationship="GAModel.FK_MemberWinnings_Members" FromRole="MemberWinnings" ToRole="Members" />
+          <NavigationProperty Name="WinningTypes" Relationship="GAModel.FK_MemberWinnings_WinningTypes" FromRole="MemberWinnings" ToRole="WinningTypes" />
+          <Property Name="FlightId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Flight" Relationship="GAModel.FK_MemberWinnings_Flight" FromRole="MemberWinnings" ToRole="Flight" />
+        </EntityType>
+        <EntityType Name="WinningTypes">
+          <Key>
+            <PropertyRef Name="WinningTypeId" />
+          </Key>
+          <Property Name="WinningTypeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="WinningType" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="MemberWinnings" Relationship="GAModel.FK_MemberWinnings_WinningTypes" FromRole="WinningTypes" ToRole="MemberWinnings" />
+        </EntityType>
+        <Association Name="FK_MemberWinnings_Event">
+          <End Type="GAModel.Event" Role="Event" Multiplicity="1" />
+          <End Type="GAModel.MemberWinnings" Role="MemberWinnings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Event">
+              <PropertyRef Name="EventId" />
+            </Principal>
+            <Dependent Role="MemberWinnings">
+              <PropertyRef Name="EventId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MemberWinnings_Members">
+          <End Type="GAModel.Members" Role="Members" Multiplicity="1" />
+          <End Type="GAModel.MemberWinnings" Role="MemberWinnings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Members">
+              <PropertyRef Name="MemberId" />
+            </Principal>
+            <Dependent Role="MemberWinnings">
+              <PropertyRef Name="MemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MemberWinnings_WinningTypes">
+          <End Type="GAModel.WinningTypes" Role="WinningTypes" Multiplicity="1" />
+          <End Type="GAModel.MemberWinnings" Role="MemberWinnings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WinningTypes">
+              <PropertyRef Name="WinningTypeId" />
+            </Principal>
+            <Dependent Role="MemberWinnings">
+              <PropertyRef Name="WinningTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Association">
+          <Key>
+            <PropertyRef Name="AssociationId" />
+          </Key>
+          <Property Name="AssociationId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="80" FixedLength="false" Unicode="true" />
+          <Property Name="SmallImage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LargeImage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="StartYear" Type="Int32" Nullable="false" />
+          <Property Name="Mission" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Board">
+          <Key>
+            <PropertyRef Name="BoardId" />
+          </Key>
+          <Property Name="BoardId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="80" FixedLength="false" Unicode="true" />
+          <Property Name="Member" Type="String" MaxLength="80" FixedLength="false" Unicode="true" />
+          <Property Name="email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="phone" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Flight">
+          <Key>
+            <PropertyRef Name="FlightId" />
+          </Key>
+          <Property Name="FlightId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="MemberWinnings" Relationship="GAModel.FK_MemberWinnings_Flight" FromRole="Flight" ToRole="MemberWinnings" />
+        </EntityType>
+        <Association Name="FK_MemberWinnings_Flight">
+          <End Type="GAModel.Flight" Role="Flight" Multiplicity="1" />
+          <End Type="GAModel.MemberWinnings" Role="MemberWinnings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Flight">
+              <PropertyRef Name="FlightId" />
+            </Principal>
+            <Dependent Role="MemberWinnings">
+              <PropertyRef Name="FlightId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="GAModelStoreContainer" CdmEntityContainer="GAEntities">
+          <EntitySetMapping Name="News">
+            <EntityTypeMapping TypeName="GAModel.News">
+              <MappingFragment StoreEntitySet="News">
+                <ScalarProperty Name="NewsId" ColumnName="NewsId" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Article" ColumnName="Article" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Event">
+            <EntityTypeMapping TypeName="GAModel.Event">
+              <MappingFragment StoreEntitySet="Event">
+                <ScalarProperty Name="EntryFee" ColumnName="EntryFee" />
+                <ScalarProperty Name="EventEnd" ColumnName="EventEnd" />
+                <ScalarProperty Name="EventStart" ColumnName="EventStart" />
+                <ScalarProperty Name="SignUpEnd" ColumnName="SignUpEnd" />
+                <ScalarProperty Name="SignUpStart" ColumnName="SignUpStart" />
+                <ScalarProperty Name="Start" ColumnName="Start" />
+                <ScalarProperty Name="Course" ColumnName="Course" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="EventId" ColumnName="EventId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EventDocuments">
+            <EntityTypeMapping TypeName="GAModel.EventDocuments">
+              <MappingFragment StoreEntitySet="EventDocuments">
+                <ScalarProperty Name="DocumentId" ColumnName="DocumentId" />
+                <ScalarProperty Name="EventId" ColumnName="EventId" />
+                <ScalarProperty Name="EventDocumentId" ColumnName="EventDocumentId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Documents">
+            <EntityTypeMapping TypeName="GAModel.Documents">
+              <MappingFragment StoreEntitySet="Documents">
+                <ScalarProperty Name="Extension" ColumnName="Extension" />
+                <ScalarProperty Name="Filename" ColumnName="Filename" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="DocumentContent" ColumnName="DocumentContent" />
+                <ScalarProperty Name="DocumentId" ColumnName="DocumentId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetRoles">
+            <EntityTypeMapping TypeName="GAModel.AspNetRoles">
+              <MappingFragment StoreEntitySet="AspNetRoles">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetUserClaims">
+            <EntityTypeMapping TypeName="GAModel.AspNetUserClaims">
+              <MappingFragment StoreEntitySet="AspNetUserClaims">
+                <ScalarProperty Name="ClaimValue" ColumnName="ClaimValue" />
+                <ScalarProperty Name="ClaimType" ColumnName="ClaimType" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetUserLogins">
+            <EntityTypeMapping TypeName="GAModel.AspNetUserLogins">
+              <MappingFragment StoreEntitySet="AspNetUserLogins">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="ProviderKey" ColumnName="ProviderKey" />
+                <ScalarProperty Name="LoginProvider" ColumnName="LoginProvider" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetUserRoles">
+            <EntityTypeMapping TypeName="GAModel.AspNetUserRoles">
+              <MappingFragment StoreEntitySet="AspNetUserRoles">
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="UserRoleId" ColumnName="UserRoleId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetUsers">
+            <EntityTypeMapping TypeName="GAModel.AspNetUsers">
+              <MappingFragment StoreEntitySet="AspNetUsers">
+                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="AccessFailedCount" ColumnName="AccessFailedCount" />
+                <ScalarProperty Name="LockoutEnabled" ColumnName="LockoutEnabled" />
+                <ScalarProperty Name="LockoutEndDateUtc" ColumnName="LockoutEndDateUtc" />
+                <ScalarProperty Name="TwoFactorEnabled" ColumnName="TwoFactorEnabled" />
+                <ScalarProperty Name="PhoneNumberConfirmed" ColumnName="PhoneNumberConfirmed" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="SecurityStamp" ColumnName="SecurityStamp" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Links">
+            <EntityTypeMapping TypeName="GAModel.Links">
+              <MappingFragment StoreEntitySet="Links">
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Link" ColumnName="Link" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="LinkId" ColumnName="LinkId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Rules">
+            <EntityTypeMapping TypeName="GAModel.Rules">
+              <MappingFragment StoreEntitySet="Rules">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="RuleDate" ColumnName="RuleDate" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="RuleId" ColumnName="RuleId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FAQ">
+            <EntityTypeMapping TypeName="GAModel.FAQ">
+              <MappingFragment StoreEntitySet="FAQ">
+                <ScalarProperty Name="Answer" ColumnName="Answer" />
+                <ScalarProperty Name="Question" ColumnName="Question" />
+                <ScalarProperty Name="FAQDate" ColumnName="FAQDate" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="FAQId" ColumnName="FAQId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Members">
+            <EntityTypeMapping TypeName="GAModel.Members">
+              <MappingFragment StoreEntitySet="Members">
+                <ScalarProperty Name="Firstname" ColumnName="Firstname" />
+                <ScalarProperty Name="Lastname" ColumnName="Lastname" />
+                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MemberWinnings">
+            <EntityTypeMapping TypeName="GAModel.MemberWinnings">
+              <MappingFragment StoreEntitySet="MemberWinnings">
+                <ScalarProperty Name="FlightId" ColumnName="FlightId" />
+                <ScalarProperty Name="EventId" ColumnName="EventId" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="WinningTypeId" ColumnName="WinningTypeId" />
+                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
+                <ScalarProperty Name="MemberWinningId" ColumnName="MemberWinningId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WinningTypes">
+            <EntityTypeMapping TypeName="GAModel.WinningTypes">
+              <MappingFragment StoreEntitySet="WinningTypes">
+                <ScalarProperty Name="WinningType" ColumnName="WinningType" />
+                <ScalarProperty Name="WinningTypeId" ColumnName="WinningTypeId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Association">
+            <EntityTypeMapping TypeName="GAModel.Association">
+              <MappingFragment StoreEntitySet="Association">
+                <ScalarProperty Name="Mission" ColumnName="Mission" />
+                <ScalarProperty Name="StartYear" ColumnName="StartYear" />
+                <ScalarProperty Name="LargeImage" ColumnName="LargeImage" />
+                <ScalarProperty Name="SmallImage" ColumnName="SmallImage" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="AssociationId" ColumnName="AssociationId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Board">
+            <EntityTypeMapping TypeName="GAModel.Board">
+              <MappingFragment StoreEntitySet="Board">
+                <ScalarProperty Name="phone" ColumnName="phone" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="Member" ColumnName="Member" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="BoardId" ColumnName="BoardId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Flight">
+            <EntityTypeMapping TypeName="GAModel.Flight">
+              <MappingFragment StoreEntitySet="Flight">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="FlightId" ColumnName="FlightId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

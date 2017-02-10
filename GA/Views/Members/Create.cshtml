@@ -1,0 +1,110 @@
+﻿@model GA.Data.Members
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{ var controller = "Members";}
+
+<div>
+    <table>
+        <tr>
+            <td><img class="page-image" src="~/Content/images/page/user.png" /></td>
+            <td><h2>Create Member</h2></td>
+        </tr>
+    </table>
+</div>
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Lastname, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @(Html.Kendo().MaskedTextBoxFor(model => model.Lastname)
+                    .Events(e => e.Change("onChangeLastname"))
+                    .HtmlAttributes(new { @class = "form-control" }))
+                @Html.ValidationMessageFor(model => model.Lastname, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Firstname, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Firstname, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Firstname, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @(Html.Label("Members with same Lastname", new { @class = "control-label col-md-2" }))
+            <div class="col-md-10">
+                @(Html.Kendo().Grid<GA.Data.Members>()
+                    .Name("MembersGrid")
+                    .Columns(c =>
+                    {
+                        c.Bound(m => m.MemberId).Hidden(true);
+                        c.Bound(m => m.Lastname);
+                        c.Bound(m => m.Firstname);
+                    })
+                    .DataSource(ds => ds
+                        .Ajax()
+                        .Filter(f => f.Add(fa => fa.Lastname))
+                        .Model(model => model.Id(m => m.MemberId))
+                        .Read("Get", controller)
+                        .Sort(s => s.Add(m => m.Lastname))
+                    )
+                    .Filterable(f => f.Operators(o => o.ForString(s => s
+                        .Clear()
+                        .StartsWith("Starts with")
+                    )))
+                    .Sortable()
+                )
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+<script>
+    function onChangeLastname() {
+        var lastname = this.value();
+        console.log("Change :: " + lastname);
+
+        var gridData = $("#MembersGrid").data("kendoGrid");
+        var filterObj = gridData.dataSource.filter();
+        var currentFilters = filterObj ? filterObj.filters : [];
+        for(var i = 0; i < currentFilters.length; i++){
+            console.log("    Field: " + currentFilters[i].field);
+            console.log(" Operator: " + currentFilters[i].operator);
+            console.log("    Value: " + currentFilters[i].value);
+        }
+        var filter = [];
+        filter.push({
+            field: "Lastname",
+            operator: "startswith",
+            value: lastname
+        });
+        console.log("The new filter");
+        for(var i = 0; i < filter.length; i++){
+            console.log("    Field: " + filter[i].field);
+            console.log(" Operator: " + filter[i].operator);
+            console.log("    Value: " + filter[i].value);
+        }
+        gridData.dataSource.filter(filter);
+    }
+</script>

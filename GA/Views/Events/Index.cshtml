@@ -1,0 +1,222 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{ var controller = "Events"; }
+
+<div>
+    <table>
+        <tr>
+            <td><img class="page-image" src="~/Content/images/page/schedule.png" /></td>
+            <td><h2>Tournament Schedule</h2></td>
+        </tr>
+    </table>
+</div>
+
+<div>
+@if (User.IsInRole("Administrator") || User.IsInRole("Tournament Manager") || User.IsInRole("Pro Shop"))
+{
+        @(Html.Kendo().ToolBar()
+        .Name("EventToolbar")
+        .Items(i =>
+        {
+            if(User.IsInRole("Administrator") || User.IsInRole("Tournament Manager"))
+            {
+                i.Add().Type(CommandType.Button).Text("Add").Icon("plus").Click("onAdd");
+            }
+            i.Add().Type(CommandType.Button).Text("Edit").Icon("pencil").Click("onEdit").HtmlAttributes(new { @class = "edit-button" });
+            if (User.IsInRole("Administrator") || User.IsInRole("Tournament Manager"))
+            {
+                i.Add().Type(CommandType.Button).Text("Delete").Icon("close").Click("onDelete").HtmlAttributes(new { @class = "delete-button" });
+            }
+        })
+        )
+    }
+    @(Html.Kendo().Grid<GA.Data.Event>()
+        .Name("EventGrid")
+        .Columns(c =>
+        {
+            c.Bound(n => n.EventId).Hidden(true);
+            c.Bound(n => n.Title).Title("Event");
+            c.Bound(n => n.EventStart).Title("Start Date").Format("{0:MMMM d, yyyy hh:mm tt}");
+            c.Bound(n => n.EventEnd).Title("End Date").Format("{0:MMMM d, yyyy}");
+        })
+        .ClientDetailTemplateId("template")
+        .DataSource(ds => ds
+            .Ajax().Model(model => model.Id(m => m.EventId))
+            .Read("GetEvents", controller)
+        )
+        .Events(e => e.Change("onSelectionChanged"))
+        .Selectable()
+        .Sortable()
+    )
+</div>
+
+<script id="template" type="text/kendo-tmpl">
+    # 
+        console.log(data); 
+        var end = Date.parse(data.SignUpEnd);
+        var start = Date.parse(data.SignUpStart);
+        var description = data.Description;
+        var now = Date.now();
+        console.log(end);
+        console.log(now);
+        var before = (now < start);
+        var open = (now >= start) && (now <= end);
+        var after = (now > end);
+        console.log(before);
+        console.log(open);
+        console.log(after);
+        var signup = "";
+        if(open == true){
+            signup = "<li><label>Signup:</label><button>Signup</button></li>";
+        }
+        if(after == true){
+            signup = "<li><label>Signup:</label>Signup is close, call the pro shop for details.</li>";
+        }
+
+        var details = "<div class='event-details'>" +
+            "<ul>" +
+            "<li><label>Description:</label>" + data.Description + "</li>" +
+            "<li><label>Course:</label>" + data.Course + "</li>" +
+            "<li><label>Starting:</label>" + data.Start + "</li>" +
+            "<li><label>Event Start:</label>" + kendo.toString(kendo.parseDate(data.EventStart), 'MMMM dd, yyyy hh:mm tt') + "</li>" +
+            "<li><label>Event End:</label>" + kendo.toString(kendo.parseDate(data.EventEnd), 'MMMM dd, yyyy') + "</li>" +
+            "<li><label>Signup Start:</label>" + kendo.toString(kendo.parseDate(data.SignUpStart), 'MMMM dd, yyyy hh:mm tt') + "</li>" +
+            "<li><label>Signup End:</label>" + kendo.toString(kendo.parseDate(data.SignUpEnd), 'MMMM dd, yyyy hh:mm tt') + "</li>" +
+            signup + 
+            "<li><label>Entry Fee:</label>$" + data.EntryFee + "</li>" +
+            "</ul>" +
+            "</div>";
+
+    #
+            @(Html.Kendo().TabStrip()
+                .Name("tabStrip_#=EventId#")
+                .SelectedIndex(0)
+                .Animation(a => a.Open(o => o.Fade(FadeDirection.In)))
+                .Items(i =>
+                {
+                    i.Add().Text("Details")
+                        .Content("#= details #");
+                })
+                .ToClientTemplate()
+            )
+
+</script>
+<style>
+    .k-detail-cell .k-tabstrip .k-content {
+        padding: 0.2em;
+    }
+
+    .event-details ul {
+        list-style: none;
+        font-style: italic;
+        margin: 15px;
+        padding: 0;
+    }
+
+    .event-details ul li {
+        margin: 0;
+        line-height: 1.7em;
+    }
+
+    .event-details label {
+        display: inline-block;
+        width: 90px;
+        padding-right: 10px;
+        text-align: right;
+        font-style: normal;
+        font-weight: bold;
+    }
+</style>
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        var toolbar = $("#EventToolbar");
+        var editButton = $(toolbar).find(".edit-button");
+        var deleteButton = $(toolbar).find(".delete-button");
+        if (editButton != null) {
+            editButton.addClass("k-state-disabled");
+            console.log("Disable Edit Button");
+        }
+        if (deleteButton != null) {
+            deleteButton.addClass("k-state-disabled");
+            console.log("Disable Delete Button");
+        }
+    });
+
+    function onAdd(e) {
+        console.log("onAdd()");
+        var url = '@Url.Action("Create", controller)';
+        window.location.href = url;
+        return false;
+    }
+
+    function onEdit(e) {
+        console.log("onEdit()");
+        var id = getId();
+        if(id != 0) {
+            var url = '@Url.Action("Edit", controller, new { id = "__id__" } )'
+                .replace("__id__", id);
+            window.location.href = url;
+        }
+        return false;
+    }
+
+    function onDelete(e) {
+        console.log("onDelete()");
+        var id = getId();
+        if(id != 0) {
+            var url = '@Url.Action("Delete", controller, new { id = "__id__" })'
+                .replace("__id__", id);
+            window.location.href = url;
+        }
+        return false;
+    }
+
+    function getId() {
+        var grid = $("#EventGrid").data("kendoGrid");
+        var Id = "0";
+        var selectedItem = grid.dataItem(grid.select());
+        if (selectedItem != null) {
+            Id = selectedItem.EventId;
+        }
+        console.log("Selected EventId: " + Id);
+        return Id;
+    }
+
+    function onSelectionChanged(e) {
+        console.log("onSelectionChanged() Begin");
+        var grid = $("#EventGrid").data("kendoGrid");
+        var toolbar = $("#EventToolbar");
+        var selectedItem = grid.dataItem(grid.select());
+        var editButton = $(toolbar).find(".edit-button");
+        var deleteButton = $(toolbar).find(".delete-button");
+
+        if (selectedItem != null) {
+            console.log("Have a selected item");
+            if (editButton != null) {
+                editButton.removeClass("k-state-disabled");
+                console.log("Enable Edit Button");
+            }
+            if (deleteButton != null) {
+                deleteButton.removeClass("k-state-disabled");
+                console.log("Enable Delete Button");
+            }
+        }
+        else {
+            if (editButton != null) {
+                editButton.addClass("k-state-disabled");
+                console.log("Disable Edit Button");
+            }
+            if (deleteButton != null) {
+                deleteButton.addClass("k-state-disabled");
+                console.log("Disable Delete Button");
+            }
+        }
+        console.log("onSelectionChanged() End");
+    }
+
+</script>

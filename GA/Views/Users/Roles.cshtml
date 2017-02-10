@@ -1,0 +1,121 @@
+﻿@{
+    ViewBag.Title = "Roles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>User Role Management</h2>
+
+<div class="form-horizontal">
+    <hr />
+    <div class="form-group">
+        @(Html.Label("User", htmlAttributes: new { @class = "control-label col-md-2" }))
+        <div class="col-md-10">
+            @(Html.Kendo().DropDownList()
+                .Name("UserDD")
+                .DataTextField("UserName")
+                .DataValueField("Id")
+                .DataSource(ds =>
+                {
+                    ds.Read(r => r.Action("GetUserList", "Users"));
+                })
+                .Events(e =>
+                {
+                    e.DataBound("onDataBound").Change("onChange");
+                })
+                .HtmlAttributes(new { style = "width: 300px;"})
+                .SelectedIndex(0)
+            )
+        </div>
+    </div>
+
+    <div class="form-group">
+        @(Html.Label("Roles", htmlAttributes: new { @class = "control-label col-md-2" }))
+
+        <div class="col-md-10">
+            @(Html.Kendo().Grid<GA.Models.UserRoles>()
+                .Name("RolesGrid")
+                .Columns(c =>
+                {
+                    c.Bound(m => m.Role).Title("").ClientTemplate("<input type='checkbox' #= Checked ? checked='checked' :'' # class='chkbx' />");
+                    c.Bound(m => m.Role).Title("Role");
+                    c.Bound(m => m.RoleId).Hidden(true);
+                })
+                //.DataSource(ds =>ds
+                //    .Ajax()
+                //    .Model(m => m.Id(u => u.RoleId))
+                //    .Read("GetUserRoles", "Users", new { Id = "761cbec2-8c09-4851-8dc5-14458073c4b2" })
+
+                //)
+                .HtmlAttributes(new { style = "width: 300px;"})
+            )
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        console.log("document.ready()");
+    });
+
+    function onDataBound() {
+        console.log("event: dataBound");
+        var userDdl = $("#UserDD").data("kendoDropDownList");
+        var userId = userDdl.value();
+        console.log("UserId: " + userId);
+        populateRolesGrid(userId);
+
+        console.log("adding click handlers");
+        $('#RolesGrid').on('click', '.chkbx', function () {
+            console.log("onClickRole()");
+            var check = $(this).is(':checked');
+            console.log("    Checked: " + check );
+            var grid = $('#RolesGrid').data().kendoGrid;
+            var userDdl = $("#UserDD").data("kendoDropDownList");
+            var UserId = userDdl.value();
+            console.log("    UserId: " + UserId);
+            var row = $(this).closest("tr");
+            var RoleId = row.find('td:nth-child(3)').text();
+            console.log("    RoleId: " + RoleId);
+
+            $.ajax({
+                url: '@Url.Action("EditRole", "Users")',
+                data: { isChecked:check, userId: UserId, roleId: RoleId },
+                type: 'POST',
+                dataType: "json",
+                success: function(result) {
+                    console.log("Calls to Users.EditRole() successful");
+                }
+            });
+        });
+    }
+
+    function onChange() {
+        console.log("event: Change");
+        var userDdl = $("#UserDD").data("kendoDropDownList");
+        var userId = userDdl.value();
+        console.log("UserId: " + userId);
+        populateRolesGrid(userId);
+    }
+
+    function populateRolesGrid(userId) {
+        console.log("populateRolesGrid() ");
+        $.ajax({
+            url: '@Url.Action("GetUserRoles", "Users")',
+            data: { Id: userId },
+            type: 'POST',
+            dataType: "json",
+            success: function(result) {
+                console.log("Calls to Users.GetUserRoles() successful");
+                console.log(result);
+                var grid = $("#RolesGrid").getKendoGrid();
+                if(grid != null) {
+                    console.log("have the grid");
+                    grid.dataSource.data(result);
+                    console.log("after setting dataSource");
+                    grid.refresh();
+                    console.log("Refresh the Roles Grid");
+                }
+            }
+        });
+    }
+</script>
